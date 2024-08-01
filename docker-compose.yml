@@ -1,0 +1,32 @@
+services:
+  server:
+    container_name: server
+    build: server
+    volumes:
+      - ./server:/usr/local/ccf355/server
+    working_dir: /usr/local/ccf355/server
+    network_mode: host
+
+  client-alice:
+    container_name: client-alice
+    build: client
+    environment:
+      - DISPLAY=$DISPLAY
+      - CLIENT_NAME=Alice
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./client:/home/jhonata/Documents/TP-Distribuidos/client
+    working_dir: /home/jhonata/Documents/TP-Distribuidos/client
+    network_mode: host
+
+  # client-bob:
+  #   container_name: client-bob
+  #   build: client
+  #   environment:
+  #     - DISPLAY=$DISPLAY
+  #     - CLIENT_NAME=Bob
+  #   volumes:
+  #     - /tmp/.X11-unix:/tmp/.X11-unix
+  #     - ./client:/home/jhonata/Documents/TP-Distribuidos/client
+  #   working_dir: /home/jhonata/Documents/TP-Distribuidos/client
+  #   network_mode: host
