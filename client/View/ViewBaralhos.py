@@ -3,7 +3,7 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from client.Controller.Client import Client
+from client.controller.Client import Client
 from typing import List
 
 class CartaSprite(arcade.Sprite):
@@ -19,19 +19,20 @@ class CartaSprite(arcade.Sprite):
 
     
 class BaralhoCompleto():
-    def __init__(self, top: int, bottom: int, distance_x_between_cards: int, distance_y_between_cards:int,  ui_manager: arcade.gui.UIManager, cards: CartaSprite):
-        self.top = top
-        self.bottom = bottom
+    def __init__(self, x: int, y: int, distance_x_between_cards: int, distance_y_between_cards:int, cartas_sprites:CartaSprite):
+        self.x = x
+        self.y = y
         self.scale = None
-        self.cards_list = arcade.SpriteList()
+        self.cards_list = cartas_sprites
         self.distance_x_between_cards = distance_x_between_cards
         self.distance_y_between_cards = distance_y_between_cards
-        self.ui_manager = ui_manager
-        self.ui_tittle = None
 
     def print_cards(self):
-        for x in range(3):
-            print()
+        for i in range(3):
+            for j in range(10):
+                add_card = CartaSprite(f"client/resources/{i*10+j+1}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.5, i*10+j)
+                self.cards_list.append(add_card)
+                self.cards_list.draw()
     
 
 class Deck():
@@ -104,42 +105,11 @@ class ViewBaralhos(arcade.Window):
 
         #sprites e colisao
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta2.png", 60, 670, 0.5, 15))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta2.png", 170, 670, 0.5,  20))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 280, 670, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 390, 670, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 500, 670, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 610, 670, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 720, 670, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 830, 670, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 940, 670, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 1050, 670, 0.5,  25))
-
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta2.png", 60, 525, 0.5, 15))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta2.png", 170, 525, 0.5,  20))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 280, 525, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 390, 525, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 500, 525, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 610, 525, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 720, 525, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 830, 525, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 940, 525, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 1050, 525, 0.5,  25))
-
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta2.png", 60, 380, 0.5, 15))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta2.png", 170, 380, 0.5,  20))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 280, 380, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 390, 380, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 500, 380, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 610, 380, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 720, 380, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 830, 380, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 940, 380, 0.5,  25))
-        self.cartas_sprites.append(CartaSprite("client/TesteCarta3.png", 1050, 380, 0.5,  25))
+        self.all_cards = BaralhoCompleto(60, 670, 110, 145,self.cartas_sprites)
+        self.all_cards.print_cards()
 
         #auxiliares
         self.dragging_card:CartaSprite = None
-        self.hover_card:CartaSprite = None
 
         #baralho
         self.deck_list: List[Deck] = []
@@ -156,6 +126,7 @@ class ViewBaralhos(arcade.Window):
     def on_draw(self):
         self.clear()
         self.cartas_sprites.draw()
+        self.all_cards.cards_list.draw()
         self.spotted_card.draw()
         for baralho in self.deck_list:
             baralho.cards_list.draw()

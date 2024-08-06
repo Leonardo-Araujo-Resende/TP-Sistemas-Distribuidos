@@ -3,7 +3,7 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from Client import Client
+from client.controller.Client import Client
 
 class ViewLoginCadastrar(arcade.Window):
 
