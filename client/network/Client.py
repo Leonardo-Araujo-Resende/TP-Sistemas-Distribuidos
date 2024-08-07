@@ -1,18 +1,4 @@
-"""
-O cliente envia seu nome e mostra a resposta do servidor.
-Essa não é necessariamente a melhor implementação de como lidar com as comunicações
-com o servidor, serve apenas para ilustrar que isso é possível.
-Inclusive, não é necessário usar as mesmas bibliotecas.
-
-Referências:
-- [Biblioteca de sockets](https://docs.python.org/3/library/socket.html)
-- [Biblioteca arcade](https://api.arcade.academy/en/latest/)
-"""
-
 from sys import argv
-import arcade
-import arcade.gui
-import threading
 import socket
 
 class Client():
@@ -38,7 +24,6 @@ class Client():
             return 0
         else:
             return 1
-
 
     def send_to_server(self, msg: str):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

@@ -1,4 +1,4 @@
-from view.ViewBaralhos import ViewBaralhos
+from View.ViewBaralhos import ViewBaralhos
 from model.Collection import Collection
 from model.Deck import Deck
 from typing import List

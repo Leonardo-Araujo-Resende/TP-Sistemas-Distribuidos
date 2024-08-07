@@ -3,7 +3,7 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from client.controller.Client import Client
+from client.network.Client import Client
 from typing import List
 
 class CartaSprite(arcade.Sprite):

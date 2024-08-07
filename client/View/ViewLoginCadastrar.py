@@ -3,7 +3,7 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from controller.Client import Client
+from network.Client import Client
 
 class ViewLoginCadastrar(arcade.Window):
 
@@ -57,6 +57,7 @@ class ViewLoginCadastrar(arcade.Window):
         
         @botao_logar.event
         def on_click(event):
+            
             if client.sign_in(self.get_input_usuario(), self.get_input_senha()) == 0:
                 self.exibe_msg_usuario("Login feito")
             else:
