@@ -1,22 +1,14 @@
-"""
-O servidor recebe o nome do client e o cumprimenta.
-A biblioteca `tqdm` foi usada única e exclusivamente para mostrar
-que é possível colocar dependências diferentes no requirements.txt
-de cada parte do sistema, ela não cumpre nenhum propósito funcional aqui.
-
-Referências:
-- [Biblioteca de sockets](https://docs.python.org/3/library/socket.html)
-"""
 from random import randint
 from sys import argv
 import socket
+import json
 import threading
 import sqlite3
 
 #funcao para separar username e senha da mensagem
-def extract_fields(msg: str):
-    identifier, username, password = msg.split("-")
-    return identifier, username, password
+def extract_fields(msg):
+        msg = json.loads(msg)
+        return msg['op'], msg['username'], msg['password']
 
 def sign_up_bd(username: str, password: str):
             #cria o banco e a tabela de usuarios

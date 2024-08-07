@@ -1,5 +1,6 @@
 from sys import argv
 import socket
+import json
 
 class Client():
     
@@ -8,8 +9,11 @@ class Client():
 
 
     def sign_in(self, username: str, password: str):
-        msg = f"login-{username}-{password}"
-        server_msg = self.send_to_server(msg)
+        msg = { "op": "login",
+                "username": username,
+                "password": password}
+        msg_json = json.dumps(msg)
+        server_msg = self.send_to_server(msg_json)
                   
         if server_msg.decode('utf8') == "Success":
             return 0
@@ -17,8 +21,11 @@ class Client():
             return 1
     
     def sign_up(self, username: str, password: str):
-        msg = f"cadastro-{username}-{password}"
-        server_msg = self.send_to_server(msg)
+        msg = { "op": "cadastro",
+                "username": username,
+                "password": password}
+        msg_json = json.dumps(msg)
+        server_msg = self.send_to_server(msg_json)
                   
         if server_msg.decode('utf8') == "Success":
             return 0

@@ -3,11 +3,11 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from network.Client import Client
+from controller.ControllerLoginCadastrar import *
 
 class ViewLoginCadastrar(arcade.Window):
 
-    def __init__(self, width, height, title, client: Client):
+    def __init__(self, width, height, title, controller_log_cad: ControllerLoginCadastrar):
         super().__init__(width, height, title, center_window=True)
                 
         self.corEscura = arcade.color_from_hex_string("#08D8FF")
@@ -58,7 +58,7 @@ class ViewLoginCadastrar(arcade.Window):
         @botao_logar.event
         def on_click(event):
             
-            if client.sign_in(self.get_input_usuario(), self.get_input_senha()) == 0:
+            if controller_log_cad.sign_in(self.get_input_usuario(), self.get_input_senha()) == 0:
                 self.exibe_msg_usuario("Login feito")
             else:
                 self.exibe_msg_usuario("Credenciais incorretas")
@@ -70,7 +70,7 @@ class ViewLoginCadastrar(arcade.Window):
 
         @botao_cadastrar.event
         def on_click(event):
-            if client.sign_up(self.get_input_usuario(), self.get_input_senha()) == 0:
+            if controller_log_cad.sign_up(self.get_input_usuario(), self.get_input_senha()) == 0:
                 self.exibe_msg_usuario("Usuario cadastrado com sucesso")
             else:
                 self.exibe_msg_usuario("Usuario ja existe")
