@@ -3,7 +3,7 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from client.controller.Client import Client
+from controller.Client import Client
 
 class ViewLoginCadastrar(arcade.Window):
 
@@ -126,14 +126,3 @@ class ViewLoginCadastrar(arcade.Window):
         self.mensagem_usuario.text = ""
         arcade.unschedule(self.apagar_msg_usuario)
 
-def main(): 
-    window  = ViewLoginCadastrar(1300, 700, "Login/Cadastrar", Client())
-    arcade.run()
-    # window = arcade.Window(800, 600, f"Client - {client_name}", resizable=True)
-    # main_view = MainView(client_name)
-    # window.show_view(main_view)
-    # arcade.run()
-
-
-if __name__ == "__main__":
-    main()
