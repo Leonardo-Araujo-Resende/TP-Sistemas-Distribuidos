@@ -31,11 +31,11 @@ class ViewLoginCadastrar(arcade.Window):
         self.manager.add(self.input_usuario)
 
         #Senha
-        self.input_senha = UILabel(text="Senha*", x=width/2 - 270/2, y=330, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
-        self.manager.add(self.input_senha)
         self.manager.add(
-            UIInputText(x=width/2 - 270/2, y=280, width=270, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+            UILabel(text="Senha*", x=width/2 - 270/2, y=330, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
         )
+        self.input_senha = UIInputText(x=width/2 - 270/2, y=280, width=270, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+        self.manager.add(self.input_senha)
         
 
         botao_style = {

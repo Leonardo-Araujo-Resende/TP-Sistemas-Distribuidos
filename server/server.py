@@ -1,9 +1,9 @@
-from random import randint
 from sys import argv
 import socket
 import json
 import threading
 import sqlite3
+
 
 #funcao para separar username e senha da mensagem
 def extract_fields(msg):
@@ -78,7 +78,7 @@ def verify_identifier(conn: socket.socket):
                 conn.sendall(f"Failed".encode("utf8"))
             
 def main():
-    
+     
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(("0.0.0.0", 4242))
         s.listen()
