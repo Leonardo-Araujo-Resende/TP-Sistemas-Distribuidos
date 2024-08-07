@@ -13,11 +13,19 @@ class Deck():
     def get_deck_size(self):
         return self.quantity
     
-    def append(self, card:Card):
-        if self.can_append_card():
-            self.cards.append(card)
-
-    def can_append_card(self):
+    def append_card(self, card:Card):
         if len(self.cards) == DECK_SIZE:
+            self.cards.append(card)
+        else:
             return False
-        return True
+
+    def reset_deck(self):
+        self.cards.clear()
+
+    def get_quantity_of_card(self, card:Card):
+        count = 0
+        for c in self.cards:
+            if c.id == card.id:
+                count += 1
+        return count
+            
