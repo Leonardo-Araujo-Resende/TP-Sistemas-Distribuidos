@@ -51,12 +51,14 @@ class Deck():
             self.alert("Baralho cheio!")
             return
 
-
         self.scale = (self.top-self.bottom)/card.height
         add_card = CartaSprite(card.filename, (card.width * self.scale * card.scale)* 2 * len(self.cards_list) + self.distance_x_between_cards * len(self.cards_list) + 100, (self.top + self.bottom)//2, self.scale * card.scale, card.id)
         self.cards_list.append(add_card)
         self.cards_list.draw()
         self.update_tittle()
+
+    def reset(self):
+        self.cards_list.clear()
 
 
     def verify_if_in(self, y: int):
@@ -75,7 +77,7 @@ class Deck():
     
     def alert(self, msg):
         self.ui_tittle.text = msg
-        arcade.schedule( self.stop_alert , 3)
+        arcade.schedule(self.stop_alert , 3)
     
     def stop_alert(self, delta_time):
         self.update_tittle()
@@ -114,11 +116,56 @@ class ViewBaralhos(arcade.Window):
         #baralho
         self.deck_list: List[Deck] = []
 
-        self.deck_list.append(Deck(105, 5, 10, self.ui_manager))
         self.deck_list.append(Deck(220, 120, 10, self.ui_manager))
+        self.deck_list.append(Deck(105, 5, 10, self.ui_manager))
 
         #Carta destacada
         self.spotted_card:CartaSprite = arcade.SpriteList()
+
+        #Botoes
+        botao_style = {
+            "font_name": "Roboto",
+            "font_size": 15,
+            "font_color": self.corClara,
+            "border_width": 2,
+            "border_color": self.corClara,
+            "bg_color": self.corEscura,
+
+            "bg_color_pressed": arcade.color.BLACK,
+            "border_color_pressed": self.corEscura,  
+            "font_color_pressed": self.corClara,
+        }
+        
+        #Botoes deck01
+        button_save_deck_01 = arcade.gui.UIFlatButton(x=855,y=220-50+2,text="Salvar1",height=50,width=100,style=botao_style)
+        self.ui_manager.add(button_save_deck_01)
+
+        @button_save_deck_01.event
+        def on_click(event):
+            #Chama controller e salva no banco
+            print()
+
+        button_delete_deck_01 = arcade.gui.UIFlatButton(x=855,y=120-1,text="Excluir1",height=50,width=100,style=botao_style)
+        self.ui_manager.add(button_delete_deck_01)
+        @button_delete_deck_01.event
+        def on_click(event):
+            self.deck_list[0].reset()
+
+        #Botoes deck01
+        button_save_deck_02 = arcade.gui.UIFlatButton(x=855,y=105-50+2,text="Salvar2",height=50,width=100,style=botao_style)
+        self.ui_manager.add(button_save_deck_02)
+        @button_save_deck_02.event
+        def on_click(event):
+            #Chama controller e salva no banco
+            print()
+
+        button_delete_deck_02 = arcade.gui.UIFlatButton(x=855,y=5-1,text="Excluir2",height=50,width=100,style=botao_style)
+        self.ui_manager.add(button_delete_deck_02)
+        @button_delete_deck_02.event
+        def on_click(event):
+            self.deck_list[1].reset()
+
+
 
 
         
