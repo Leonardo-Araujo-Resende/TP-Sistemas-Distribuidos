@@ -3,7 +3,7 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from client.network.Client import Client
+from network.Client import *
 from typing import List
 
 class CartaSprite(arcade.Sprite):
@@ -30,7 +30,7 @@ class BaralhoCompleto():
     def print_cards(self):
         for i in range(3):
             for j in range(10):
-                add_card = CartaSprite(f"client/resources/{i*10+j+1}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.5, i*10+j)
+                add_card = CartaSprite(f"resources/{i*10+j+1}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.5, i*10+j)
                 self.cards_list.append(add_card)
                 self.cards_list.draw()
     
@@ -50,6 +50,7 @@ class Deck():
         if len(self.cards_list) >= 9:
             self.alert("Baralho cheio!")
             return
+
 
         self.scale = (self.top-self.bottom)/card.height
         add_card = CartaSprite(card.filename, (card.width * self.scale * card.scale)* 2 * len(self.cards_list) + self.distance_x_between_cards * len(self.cards_list) + 100, (self.top + self.bottom)//2, self.scale * card.scale, card.id)
@@ -77,7 +78,7 @@ class Deck():
     
     def alert(self, msg):
         self.ui_tittle.text = msg
-        arcade.schedule(self.stop_alert , 3)
+        arcade.schedule( self.stop_alert , 3)
     
     def stop_alert(self, delta_time):
         self.update_tittle()
@@ -91,16 +92,16 @@ class Deck():
         self.ui_tittle.text = f"Baralho {len(self.cards_list)}"
     
 
-class ViewBaralhos(arcade.Window):
+class ViewBaralhos(arcade.View):
 
-    def __init__(self, width, height, title, client: Client):
-        super().__init__(width, height, title, center_window=True)
-
+    def __init__(self,client, window):
+        super().__init__()
+        self.window = window
+        
                 
         self.corEscura = arcade.color_from_hex_string("#08D8FF")
         self.corClara = arcade.color_from_hex_string("#220B60")       
 
-        arcade.set_background_color(self.corEscura)
 
         self.ui_manager = arcade.gui.UIManager()
         self.ui_manager.enable()
@@ -135,7 +136,7 @@ class ViewBaralhos(arcade.Window):
             "border_color_pressed": self.corEscura,  
             "font_color_pressed": self.corClara,
         }
-        
+
         #Botoes deck01
         button_save_deck_01 = arcade.gui.UIFlatButton(x=855,y=220-50+2,text="Salvar1",height=50,width=100,style=botao_style)
         self.ui_manager.add(button_save_deck_01)
@@ -166,9 +167,9 @@ class ViewBaralhos(arcade.Window):
             self.deck_list[1].reset()
 
 
+    def on_show(self):
+        self.window.set_window_size(1400,750)
 
-
-        
 
     def on_draw(self):
         self.clear()

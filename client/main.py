@@ -1,10 +1,14 @@
 import arcade 
 from View.ViewLoginCadastrar import *
 from controller.ControllerLoginCadastrar import *
+from View.WindowMaster import WindowMaster
 
 def main(): 
-    window  = ViewLoginCadastrar(1300, 700, "Login/Cadastrar", ControllerLoginCadastrar())
+
+    window = WindowMaster()
+    window.show_view(ViewLoginCadastrar(window, ControllerLoginCadastrar()))
     arcade.run()
+
 
 
 if __name__ == "__main__":
