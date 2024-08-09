@@ -143,7 +143,7 @@ class ViewBaralhos(arcade.View):
 
         @button_save_deck_01.event
         def on_click(event):
-            #Chama controller e salva no banco
+            #Chama controller e salva no banco deck 01
             print()
 
         button_delete_deck_01 = arcade.gui.UIFlatButton(x=855,y=120-1,text="Excluir1",height=50,width=100,style=botao_style)
@@ -152,12 +152,12 @@ class ViewBaralhos(arcade.View):
         def on_click(event):
             self.deck_list[0].reset()
 
-        #Botoes deck01
+        #Botoes deck02
         button_save_deck_02 = arcade.gui.UIFlatButton(x=855,y=105-50+2,text="Salvar2",height=50,width=100,style=botao_style)
         self.ui_manager.add(button_save_deck_02)
         @button_save_deck_02.event
         def on_click(event):
-            #Chama controller e salva no banco
+            #Chama controller e salva no banco deck 02
             print()
 
         button_delete_deck_02 = arcade.gui.UIFlatButton(x=855,y=5-1,text="Excluir2",height=50,width=100,style=botao_style)
@@ -165,6 +165,31 @@ class ViewBaralhos(arcade.View):
         @button_delete_deck_02.event
         def on_click(event):
             self.deck_list[1].reset()
+
+
+
+
+
+
+        #Botoes jogar partida
+        button_play_with_deck_01 = arcade.gui.UIFlatButton(x=1000,y=120,text="Jogar 01",height=110,width=300,style=botao_style)
+        self.ui_manager.add(button_play_with_deck_01)
+
+        @button_play_with_deck_01.event
+        def on_click(event):
+            #Inicia partida com deck 01
+            print()
+
+        #Botoes jogar
+        button_play_with_deck_2 = arcade.gui.UIFlatButton(x=1000,y=5,text="Jogar02",height=110,width=300,style=botao_style)
+        self.ui_manager.add(button_play_with_deck_2)
+
+        @button_play_with_deck_2.event
+        def on_click(event):
+            #Inicia partida com deck 02
+            print()
+
+
 
 
     def on_show(self):
