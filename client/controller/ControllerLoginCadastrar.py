@@ -11,11 +11,11 @@ class ControllerLoginCadastrar():
         msg = { "op": "login",
                 "username": username,
                 "password": password}
-        return self.client.sign_in(msg)
+        return self.client.send_msg(msg)
         
     
     def sign_up(self, username: str, password: str):
         msg = { "op": "cadastro",
                 "username": username,
                 "password": password}
-        return self.client.sign_up(msg)
+        return self.client.send_msg(msg)

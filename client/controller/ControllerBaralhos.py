@@ -21,13 +21,13 @@ class ControllerBaralhos():
 
     def save_deck_(self, deck:Deck, index_deck:int):
         #Chama network salva deck 1 no banco
-        msg = {"op": "SalvaDeck", "deck": []}
+        msg = {"op": "salvaDeck", "deck": []}
 
         for card in deck.cards:
             # add id da card na msg
             msg['deck'].append(card.get_id())
         
-        return self.client.save_deck(msg)
+        return self.client.send_msg(msg)
 
     def delete_deck(self, index_deck:int):
         self.decks[index_deck].reset_deck()

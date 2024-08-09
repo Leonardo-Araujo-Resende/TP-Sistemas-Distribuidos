@@ -19,21 +19,24 @@ class Server():
             
             #editar para aceitar outras mensagens alem de logar e cadastrar
             identifier = msg_dict['op']
-            if identifier == "login":
-                username, password = msg_dict['username'], msg_dict['password']
-                if self.controller_log_cad.sign_in_bd(username, password) == 0:
-                    conn.sendall(f"Success".encode("utf8"))
-                else:
+            match identifier:
+                case 'login':
+                    username, password = msg_dict['username'], msg_dict['password']
+                    if self.controller_log_cad.sign_in_bd(username, password) == 0:
+                        conn.sendall(f"Success".encode("utf8"))
+                    else:
+                        conn.sendall(f"Failed".encode("utf8"))
+                case 'cadastro':
+                    username, password = msg_dict['username'], msg_dict['password']
+                    if self.controller_log_cad.sign_up_bd(username, password) == 0:
+                        conn.sendall(f"Success".encode("utf8"))
+                    else:
+                        conn.sendall(f"Failed".encode("utf8"))
+                case 'salvaDeck':
+                    pass
+                case _:
                     conn.sendall(f"Failed".encode("utf8"))
-            # elif identifier == "SaveDeck":
-                #implementar salvamento de deck no banco
-            else:
-                username, password = msg_dict['username'], msg_dict['password']
-                if self.controller_log_cad.sign_up_bd(username, password) == 0:
-                    conn.sendall(f"Success".encode("utf8"))
-                else:
-                    conn.sendall(f"Failed".encode("utf8"))
-
+                
     def listen(self):
         
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

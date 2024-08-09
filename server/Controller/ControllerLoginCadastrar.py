@@ -1,4 +1,5 @@
 import sqlite3
+import random
 
 class ControllerLoginCadastrar():
     def __init__(self):
@@ -16,13 +17,28 @@ class ControllerLoginCadastrar():
         #se forem unicos, insere no banco
         if len(users) == 0:
             c.execute("INSERT INTO users VALUES (?, ?)", (username, password,))
+
                 
             #mostra a insercao  
             c.execute("SELECT * FROM users")
             query = c.fetchall()
             print(f"All users and passwords: {query}")
+
+            #criando e inserindo no banco a colecao de cartas do usuario
+            colecao_inicial = random.sample(range(1, 31), 9)
+            nomes_cartas = [f"{id}.png" for id in colecao_inicial]
+            for nome_carta in nomes_cartas:
+                c.execute("INSERT INTO cards (username, filename) VALUES (?, ?)", (username, nome_carta))
+            
+
+            #mostra a insercao  
+            c.execute("SELECT * FROM cards")
+            query = c.fetchall()
+            print(f"All users and cards: {query}")
+
             bd_conn.commit()
             bd_conn.close()
+
             return 0
                 
         else:
