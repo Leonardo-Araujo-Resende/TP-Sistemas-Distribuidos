@@ -3,10 +3,12 @@ from model.Collection import Collection
 from model.Deck import Deck
 from typing import List
 from model.Card import Card
+from network.Client import *
 
 
 class ControllerBaralhos():
     def __init__(self, view:ViewBaralhos, collection:Collection, decks:List[Deck]):
+        self.client = Client()
         self.collection = collection
         self.decks = decks
 
@@ -19,7 +21,13 @@ class ControllerBaralhos():
 
     def save_deck_(self, deck:Deck, index_deck:int):
         #Chama network salva deck 1 no banco
-        print()
+        msg = {"op": "SalvaDeck", "deck": []}
+
+        for card in deck.cards:
+            # add id da card na msg
+            msg['deck'].append(card.get_id())
+        
+        return self.client.save_deck(msg)
 
     def delete_deck(self, index_deck:int):
         self.decks[index_deck].reset_deck()

@@ -8,10 +8,14 @@ class ControllerLoginCadastrar():
 
 
     def sign_in(self, username: str, password: str):
-
-        return self.client.sign_in(username, password)
+        msg = { "op": "login",
+                "username": username,
+                "password": password}
+        return self.client.sign_in(msg)
         
     
     def sign_up(self, username: str, password: str):
-
-        return self.client.sign_up(username, password)
+        msg = { "op": "cadastro",
+                "username": username,
+                "password": password}
+        return self.client.sign_up(msg)
