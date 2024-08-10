@@ -9,6 +9,8 @@ class WindowMaster(arcade.Window):
 
     def __init__(self):
         super().__init__(1400, 750, "Janela Principal", center_window=True)
+        self.collection = None
+
 
         self.corEscura = arcade.color_from_hex_string("#08D8FF")
         self.corClara = arcade.color_from_hex_string("#220B60")    
@@ -23,4 +25,7 @@ class WindowMaster(arcade.Window):
         self.center_window()
 
     def switch_view_to_Baralho(self):
-        self.switch_view(ViewBaralhos(Client,self))
+        self.switch_view(ViewBaralhos(Client,self,self.collection))
+
+    def set_collection(self, collection):
+        self.collection = collection

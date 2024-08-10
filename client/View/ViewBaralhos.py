@@ -19,20 +19,28 @@ class CartaSprite(arcade.Sprite):
 
     
 class BaralhoCompleto():
-    def __init__(self, x: int, y: int, distance_x_between_cards: int, distance_y_between_cards:int, cartas_sprites:CartaSprite):
+    def __init__(self, x: int, y: int, distance_x_between_cards: int, distance_y_between_cards:int, cartas_sprites:CartaSprite, collection):
         self.x = x
         self.y = y
         self.scale = None
         self.cards_list = cartas_sprites
         self.distance_x_between_cards = distance_x_between_cards
         self.distance_y_between_cards = distance_y_between_cards
+        self.collection = collection
 
     def print_cards(self):
+        tamanho = len(self.collection)
+        cont = 0
         for i in range(3):
             for j in range(10):
-                add_card = CartaSprite(f"resources/{i*10+j+1}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.5, i*10+j)
+                add_card = CartaSprite(f"resources/{self.collection[i*10+j]}", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.5, i*10+j)
                 self.cards_list.append(add_card)
                 self.cards_list.draw()
+                cont += 1
+                if cont == tamanho:
+                    break
+            if cont == tamanho:
+                break
     
 
 class Deck():
@@ -94,8 +102,9 @@ class Deck():
 
 class ViewBaralhos(arcade.View):
 
-    def __init__(self, controller: ControllerBaralhos, window):
+    def __init__(self, controller: ControllerBaralhos, window, collection):
         super().__init__()
+        self.collection = collection
         self.window = window
         self.controller = controller
         
@@ -109,18 +118,17 @@ class ViewBaralhos(arcade.View):
 
         #sprites e colisao
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
-        self.all_cards = BaralhoCompleto(60, 670, 110, 145, self.cartas_sprites)
+        self.all_cards = BaralhoCompleto(60, 670, 110, 145, self.cartas_sprites, self.collection)
         self.all_cards.print_cards()
 
         #auxiliares
         self.dragging_card:CartaSprite = None
 
         #baralhos
-        self.deck1_list: List[Deck] = []
-        self.deck2_list: List[Deck] = []
+        self.deck_list: List[Deck] = []
 
-        self.deck1_list.append(Deck(220, 120, 10, self.ui_manager))
-        self.deck2_list.append(Deck(105, 5, 10, self.ui_manager))
+        self.deck_list.append(Deck(220, 120, 10, self.ui_manager))
+        self.deck_list.append(Deck(105, 5, 10, self.ui_manager))
 
         #Carta destacada
         self.spotted_card:CartaSprite = arcade.SpriteList()
@@ -146,12 +154,10 @@ class ViewBaralhos(arcade.View):
         @button_save_deck_01.event
         def on_click(event):
             #Chama controller e salva no banco deck 01
-            if self.controller.save_deck(self.deck1_list, 1) == 1:
-                #printa deck salvo 
-                pass
+            if self.controller.save_deck(self.deck_list[0], 0) == 1:
+                self.deck_list[0].alert("Deck Salvo")
             else:
-                #print nao foi possivel salvar o deck
-                pass
+                self.deck_list[0].alert("Erro ao salvar")
 
 
         button_delete_deck_01 = arcade.gui.UIFlatButton(x=855,y=120-1,text="Excluir1",height=50,width=100,style=botao_style)
@@ -166,12 +172,10 @@ class ViewBaralhos(arcade.View):
         @button_save_deck_02.event
         def on_click(event):
             #Chama controller e salva no banco deck 02
-            if self.controller.save_deck(self.deck2_list, 2) == 1:
-                #printa deck salvo 
-                pass
+            if self.controller.save_deck(self.deck_list[1], 1) == 1:
+                self.deck_list[1].alert("Deck Salvo")
             else:
-                #print nao foi possivel salvar o deck
-                pass
+                self.deck_list[1].alert("Erro ao salvar")
 
         button_delete_deck_02 = arcade.gui.UIFlatButton(x=855,y=5-1,text="Excluir2",height=50,width=100,style=botao_style)
         self.ui_manager.add(button_delete_deck_02)

@@ -66,9 +66,8 @@ class ViewLoginCadastrar(arcade.View):
             if retorno == 1:
                 self.exibe_msg_usuario("Credenciais incorretas")
             else:
-                #passar a colecao para a view de baralhos
-                self.exibe_msg_usuario(f"{retorno}")
-                # self.window.switch_view_to_Baralho()
+                self.window.set_collection(retorno)
+                self.window.switch_view_to_Baralho()
 
 
         #Botao cadastrar
