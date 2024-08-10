@@ -3,12 +3,16 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from Client import Client
+from controller.ControllerLoginCadastrar import *
 
-class ViewLoginCadastrar(arcade.Window):
+class ViewLoginCadastrar(arcade.View):
 
-    def __init__(self, width, height, title, client: Client):
-        super().__init__(width, height, title, center_window=True)
+    def __init__(self, window, controller_log_cad: ControllerLoginCadastrar):
+        super().__init__()
+        self.width = 1300
+        self.height = 700
+
+        self.window = window
                 
         self.corEscura = arcade.color_from_hex_string("#08D8FF")
         self.corClara = arcade.color_from_hex_string("#220B60")       
@@ -20,22 +24,22 @@ class ViewLoginCadastrar(arcade.Window):
 
         #Titulo
         self.manager.add(
-            UILabel( text="Corrida Maluca", x=width/2 - 500/2, y=500, width=500, height=80, align="center", font_name="Roboto", font_size=40,text_color=self.corClara)
+            UILabel( text="Corrida Maluca", x=self.width/2 - 500/2, y=500, width=500, height=80, align="center", font_name="Roboto", font_size=40,text_color=self.corClara)
         )
         
         #Usuario
         self.manager.add(
-            UILabel( text="Usuário*", x=width/2 - 270/2, y=430, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
+            UILabel( text="Usuário*", x=self.width/2 - 270/2, y=430, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
         )
-        self.input_usuario = UIInputText(x=width/2 - 270/2, y=380, width=320, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+        self.input_usuario = UIInputText(x=self.width/2 - 270/2, y=380, width=320, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
         self.manager.add(self.input_usuario)
 
         #Senha
-        self.input_senha = UILabel(text="Senha*", x=width/2 - 270/2, y=330, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
-        self.manager.add(self.input_senha)
         self.manager.add(
-            UIInputText(x=width/2 - 270/2, y=280, width=270, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+            UILabel(text="Senha*", x=self.width/2 - 270/2, y=330, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
         )
+        self.input_senha = UIInputText(x=self.width/2 - 270/2, y=280, width=270, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+        self.manager.add(self.input_senha)
         
 
         botao_style = {
@@ -57,10 +61,13 @@ class ViewLoginCadastrar(arcade.Window):
         
         @botao_logar.event
         def on_click(event):
-            if client.sign_in(self.get_input_usuario(), self.get_input_senha()) == 0:
-                self.exibe_msg_usuario("Login feito")
-            else:
+            
+            retorno = controller_log_cad.sign_in(self.get_input_usuario(), self.get_input_senha())
+            if retorno == 1:
                 self.exibe_msg_usuario("Credenciais incorretas")
+            else:
+                self.window.set_collection(retorno)
+                self.window.switch_view_to_Baralho()
 
 
         #Botao cadastrar
@@ -69,16 +76,19 @@ class ViewLoginCadastrar(arcade.Window):
 
         @botao_cadastrar.event
         def on_click(event):
-            if client.sign_up(self.get_input_usuario(), self.get_input_senha()) == 0:
+            if controller_log_cad.sign_up(self.get_input_usuario(), self.get_input_senha()) == 0:
                 self.exibe_msg_usuario("Usuario cadastrado com sucesso")
             else:
                 self.exibe_msg_usuario("Usuario ja existe")
             
 
         #Mensagens
-        self.mensagem_usuario = UILabel( text="", x=width/2 - 400/2, y=50, width=400, height=30, font_name="Roboto", align="center",font_size=10,text_color=arcade.color.RED)
+        self.mensagem_usuario = UILabel( text="", x=self.width/2 - 400/2, y=50, width=400, height=30, font_name="Roboto", align="center",font_size=10,text_color=arcade.color.RED)
         self.manager.add(self.mensagem_usuario)
-        
+    
+    def on_show(self):
+        self.window.set_window_size(1300,700)
+
 
     def on_draw(self):
         self.clear()
@@ -126,14 +136,3 @@ class ViewLoginCadastrar(arcade.Window):
         self.mensagem_usuario.text = ""
         arcade.unschedule(self.apagar_msg_usuario)
 
-def main(): 
-    window  = ViewLoginCadastrar(1300, 700, "Login/Cadastrar", Client())
-    arcade.run()
-    # window = arcade.Window(800, 600, f"Client - {client_name}", resizable=True)
-    # main_view = MainView(client_name)
-    # window.show_view(main_view)
-    # arcade.run()
-
-
-if __name__ == "__main__":
-    main()
