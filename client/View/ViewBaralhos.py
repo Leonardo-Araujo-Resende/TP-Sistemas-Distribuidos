@@ -29,11 +29,11 @@ class BaralhoCompleto():
         self.collection = collection
 
     def print_cards(self):
-        tamanho = len(self.collection)
+        tamanho = len(self.collection.get_cards())
         cont = 0
         for i in range(3):
             for j in range(10):
-                add_card = CartaSprite(f"resources/{self.collection[i*10+j]}", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.5, i*10+j)
+                add_card = CartaSprite(f"resources/{self.collection.get_cards()[i*10+j].get_id()}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.5, int(self.collection.get_cards()[i*10+j].get_id()))
                 self.cards_list.append(add_card)
                 self.cards_list.draw()
                 cont += 1
@@ -43,31 +43,41 @@ class BaralhoCompleto():
                 break
     
 
-class Deck():
-    def __init__(self, top: int, bottom: int, distance_x_between_cards: int, ui_manager: arcade.gui.UIManager):
+class DeckView():
+    def __init__(self, deck_id:int, top: int, bottom: int, distance_x_between_cards: int, ui_manager: arcade.gui.UIManager, controller: ControllerBaralhos):
+        self.deck_id = deck_id
         self.top = top
         self.bottom = bottom
         self.scale = None
         self.cards_list = arcade.SpriteList()
         self.distance_x_between_cards = distance_x_between_cards
         self.ui_manager = ui_manager
-        self.ui_tittle = None
-        self.tittle()
+        self.ui_title = None
+        self.controller = controller
+        self.title()
 
     def append_card(self, card: CartaSprite):
         if len(self.cards_list) >= 9:
             self.alert("Baralho cheio!")
             return
+        
+        if self.controller.append_card_deck(card.id, self.deck_id) == False:
+            self.alert("Não possui carta ou mais de 3 cópias")
+            return
+
 
 
         self.scale = (self.top-self.bottom)/card.height
         add_card = CartaSprite(card.filename, (card.width * self.scale * card.scale)* 2 * len(self.cards_list) + self.distance_x_between_cards * len(self.cards_list) + 100, (self.top + self.bottom)//2, self.scale * card.scale, card.id)
         self.cards_list.append(add_card)
         self.cards_list.draw()
-        self.update_tittle()
+        self.update_title()
 
     def reset(self):
+        self.controller.reset_deck(self.deck_id)
         self.cards_list.clear()
+        self.update_title()
+
 
 
     def verify_if_in(self, y: int):
@@ -85,28 +95,29 @@ class Deck():
         )
     
     def alert(self, msg):
-        self.ui_tittle.text = msg
+        self.ui_title.text = msg
         arcade.schedule( self.stop_alert , 3)
     
     def stop_alert(self, delta_time):
-        self.update_tittle()
+        self.update_title()
         arcade.unschedule(self.stop_alert)
 
-    def tittle(self):
-        self.ui_tittle = UILabel( text="Baralho", x=20, y=self.top, width=300, height=15, font_name="Roboto", font_size=10,text_color=arcade.color_from_hex_string("#220B60") )
-        self.ui_manager.add( self.ui_tittle)
+    def title(self):
+        self.ui_title = UILabel( text="Baralho", x=20, y=self.top, width=300, height=15, font_name="Roboto", font_size=10,text_color=arcade.color_from_hex_string("#220B60") )
+        self.ui_manager.add( self.ui_title)
     
-    def update_tittle(self):
-        self.ui_tittle.text = f"Baralho {len(self.cards_list)}"
+    def update_title(self):
+        self.ui_title.text = f"Baralho {len(self.cards_list)}"
     
 
 class ViewBaralhos(arcade.View):
 
-    def __init__(self, controller: ControllerBaralhos, window, collection):
+    def __init__(self, controller_client: Client, controller_view:ControllerBaralhos, window, collection):
         super().__init__()
         self.collection = collection
         self.window = window
-        self.controller = controller
+        self.controller_client = controller_client
+        self.controller_view = controller_view
         
                 
         self.corEscura = arcade.color_from_hex_string("#08D8FF")
@@ -125,13 +136,16 @@ class ViewBaralhos(arcade.View):
         self.dragging_card:CartaSprite = None
 
         #baralhos
-        self.deck_list: List[Deck] = []
+        self.deck_list: List[DeckView] = []
 
-        self.deck_list.append(Deck(220, 120, 10, self.ui_manager))
-        self.deck_list.append(Deck(105, 5, 10, self.ui_manager))
+        self.deck_list.append(DeckView(0, 220, 120, 10, self.ui_manager, self.controller_view ))
+        self.deck_list.append(DeckView(1, 105, 5, 10, self.ui_manager, self.controller_view ))
 
-        #Carta destacada
+        #Carta destacada e quantidade
         self.spotted_card:CartaSprite = arcade.SpriteList()
+
+        self.text_quantity = UILabel(text="Quantidade nao usada: ", x=1125, y=300, width=300, height=40, font_name="Roboto", font_size=15,text_color=arcade.color_from_hex_string("#220B60") )
+        self.ui_manager.add( self.text_quantity)
 
         #Botoes
         botao_style = {
@@ -154,7 +168,7 @@ class ViewBaralhos(arcade.View):
         @button_save_deck_01.event
         def on_click(event):
             #Chama controller e salva no banco deck 01
-            if self.controller.save_deck(self.deck_list[0], 0) == 1:
+            if self.controller_client.save_deck(self.deck_list[0], 0) == 1:
                 self.deck_list[0].alert("Deck Salvo")
             else:
                 self.deck_list[0].alert("Erro ao salvar")
@@ -172,7 +186,7 @@ class ViewBaralhos(arcade.View):
         @button_save_deck_02.event
         def on_click(event):
             #Chama controller e salva no banco deck 02
-            if self.controller.save_deck(self.deck_list[1], 1) == 1:
+            if self.controller_client.save_deck(self.deck_list[1], 1) == 1:
                 self.deck_list[1].alert("Deck Salvo")
             else:
                 self.deck_list[1].alert("Erro ao salvar")
@@ -246,6 +260,7 @@ class ViewBaralhos(arcade.View):
     def create_highlight_card(self, card :CartaSprite):
         self.spotted_card.clear()
         self.spotted_card.append(CartaSprite(card.filename, 1250, 554, 1.3, card.id))
+        self.text_quantity.text = f"Quantidade nao usada: {self.controller_view.collection.get_quantity_by_id(card.id)}"
             
                 
 

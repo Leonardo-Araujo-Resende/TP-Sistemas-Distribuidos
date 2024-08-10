@@ -1,7 +1,7 @@
 from model.Truque import *
 
 class Card():
-    def __init__(self, id:int, velocidade:int, aceleracao:int, peso:int, capacidade:int, resistencia:int, truque:Truque, quantity:int):
+    def __init__(self, id:int, quantity:int):
         self.id = id
         self.quantity = quantity
 
@@ -12,7 +12,7 @@ class Card():
         return self.quantity
     
     def increment_quantity(self):
-        self.quantity += self.quantity
+        self.quantity += 1
 
     def decrement_quantity(self):
-        self.quantity -= self.quantity
+        self.quantity -= 1

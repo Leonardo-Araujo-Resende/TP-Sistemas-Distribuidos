@@ -19,7 +19,7 @@ class ControllerLoginCadastrar():
 
             #criando e inserindo no banco a colecao de cartas do usuario
             colecao_inicial = random.sample(range(1, 31), 9)
-            nomes_cartas = [f"{id}.png" for id in colecao_inicial]
+            nomes_cartas = [f"{id}" for id in colecao_inicial]
             for nome_carta in nomes_cartas:
                 c.execute("INSERT INTO cards (username, filename) VALUES (?, ?)", (username, nome_carta))
             

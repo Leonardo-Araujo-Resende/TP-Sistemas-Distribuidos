@@ -4,12 +4,14 @@ import arcade.csscolor
 import arcade.gui
 from network.Client import *
 from View.ViewBaralhos import ViewBaralhos
+from controller.ControllerBaralhos import *
+from model.Collection import *
 
 class WindowMaster(arcade.Window):
 
     def __init__(self):
         super().__init__(1400, 750, "Janela Principal", center_window=True)
-        self.collection = None
+        self.collection:Collection = Collection([])
 
 
         self.corEscura = arcade.color_from_hex_string("#08D8FF")
@@ -25,7 +27,8 @@ class WindowMaster(arcade.Window):
         self.center_window()
 
     def switch_view_to_Baralho(self):
-        self.switch_view(ViewBaralhos(Client,self,self.collection))
+        self.switch_view(ViewBaralhos(Client, ControllerBaralhos(self.collection, [Deck([]), Deck([])]), self,self.collection))
 
     def set_collection(self, collection):
-        self.collection = collection
+        for c in collection:
+            self.collection.append_card(c)
