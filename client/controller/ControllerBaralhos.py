@@ -1,13 +1,12 @@
-from View.ViewBaralhos import ViewBaralhos
-from model.Collection import Collection
-from model.Deck import Deck
+from model.Collection import *
+from model.Deck import *
 from typing import List
-from model.Card import Card
+from model.Card import *
 from network.Client import *
 
 
 class ControllerBaralhos():
-    def __init__(self, view:ViewBaralhos, collection:Collection, decks:List[Deck]):
+    def __init__(self, collection:Collection, decks:List[Deck]):
         self.client = Client()
         self.collection = collection
         self.decks = decks
@@ -19,9 +18,9 @@ class ControllerBaralhos():
             self.collection.decrement_quantity_by_id(card.get_id())
                 
 
-    def save_deck_(self, deck:Deck, index_deck:int):
+    def save_deck(self, deck:Deck, index_deck:int):
         #Chama network salva deck 1 no banco
-        msg = {"op": "salvaDeck", "deck": []}
+        msg = {"op": "salvaDeck", "deck_index": index_deck, "deck": []}
 
         for card in deck.cards:
             # add id da card na msg

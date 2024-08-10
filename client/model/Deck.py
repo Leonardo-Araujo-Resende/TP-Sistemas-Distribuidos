@@ -1,7 +1,7 @@
 import arcade 
 from model.Card import Card
 from typing import List
-import Truque
+from model.Truque import *
 
 DECK_SIZE = 9
 

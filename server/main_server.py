@@ -3,6 +3,7 @@ from network.server import Server
 import sqlite3
 
 def main():
+    
     server = Server()
     bd_conn = sqlite3.connect('corrida_maluca.db')
     c = bd_conn.cursor()

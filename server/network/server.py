@@ -19,23 +19,27 @@ class Server():
             
             #editar para aceitar outras mensagens alem de logar e cadastrar
             identifier = msg_dict['op']
-            match identifier:
-                case 'login':
-                    username, password = msg_dict['username'], msg_dict['password']
-                    if self.controller_log_cad.sign_in_bd(username, password) == 0:
-                        conn.sendall(f"Success".encode("utf8"))
-                    else:
-                        conn.sendall(f"Failed".encode("utf8"))
-                case 'cadastro':
-                    username, password = msg_dict['username'], msg_dict['password']
-                    if self.controller_log_cad.sign_up_bd(username, password) == 0:
-                        conn.sendall(f"Success".encode("utf8"))
-                    else:
-                        conn.sendall(f"Failed".encode("utf8"))
-                case 'salvaDeck':
-                    pass
-                case _:
+            
+            if identifier == 'login':
+                username, password = msg_dict['username'], msg_dict['password']
+                if self.controller_log_cad.sign_in_bd(username, password) == 0:
+                    cards = self.controller_log_cad.return_colection(username)
+                    msg_rtn = {"op": "colecao", "colecao": cards}
+                    msg_json = json.dumps(msg_rtn)
+                    conn.sendall(bytes(msg_json, encoding="utf-8"))
+                else:
                     conn.sendall(f"Failed".encode("utf8"))
+
+            elif identifier == 'cadastro':
+                username, password = msg_dict['username'], msg_dict['password']
+                if self.controller_log_cad.sign_up_bd(username, password) == 0:
+                    conn.sendall(f"Success".encode("utf8"))
+                else:
+                    conn.sendall(f"Failed".encode("utf8"))
+
+            elif identifier == 'salvaDeck':
+                pass
+
                 
     def listen(self):
         

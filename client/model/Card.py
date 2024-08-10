@@ -1,4 +1,4 @@
-import Truque
+from model.Truque import *
 
 class Card():
     def __init__(self, id:int, velocidade:int, aceleracao:int, peso:int, capacidade:int, resistencia:int, truque:Truque, quantity:int):

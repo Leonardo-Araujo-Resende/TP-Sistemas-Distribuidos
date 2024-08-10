@@ -62,10 +62,13 @@ class ViewLoginCadastrar(arcade.View):
         @botao_logar.event
         def on_click(event):
             
-            if controller_log_cad.sign_in(self.get_input_usuario(), self.get_input_senha()) == 0:
-                self.window.switch_view_to_Baralho()
-            else:
+            retorno = controller_log_cad.sign_in(self.get_input_usuario(), self.get_input_senha())
+            if retorno == 1:
                 self.exibe_msg_usuario("Credenciais incorretas")
+            else:
+                #passar a colecao para a view de baralhos
+                self.exibe_msg_usuario(f"{retorno}")
+                # self.window.switch_view_to_Baralho()
 
 
         #Botao cadastrar

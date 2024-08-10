@@ -3,7 +3,7 @@ import arcade.csscolor
 import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
-from network.Client import *
+from controller.ControllerBaralhos import *
 from typing import List
 
 class CartaSprite(arcade.Sprite):
@@ -94,9 +94,10 @@ class Deck():
 
 class ViewBaralhos(arcade.View):
 
-    def __init__(self,client, window):
+    def __init__(self, controller: ControllerBaralhos, window):
         super().__init__()
         self.window = window
+        self.controller = controller
         
                 
         self.corEscura = arcade.color_from_hex_string("#08D8FF")
@@ -108,17 +109,18 @@ class ViewBaralhos(arcade.View):
 
         #sprites e colisao
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
-        self.all_cards = BaralhoCompleto(60, 670, 110, 145,self.cartas_sprites)
+        self.all_cards = BaralhoCompleto(60, 670, 110, 145, self.cartas_sprites)
         self.all_cards.print_cards()
 
         #auxiliares
         self.dragging_card:CartaSprite = None
 
-        #baralho
-        self.deck_list: List[Deck] = []
+        #baralhos
+        self.deck1_list: List[Deck] = []
+        self.deck2_list: List[Deck] = []
 
-        self.deck_list.append(Deck(220, 120, 10, self.ui_manager))
-        self.deck_list.append(Deck(105, 5, 10, self.ui_manager))
+        self.deck1_list.append(Deck(220, 120, 10, self.ui_manager))
+        self.deck2_list.append(Deck(105, 5, 10, self.ui_manager))
 
         #Carta destacada
         self.spotted_card:CartaSprite = arcade.SpriteList()
@@ -144,7 +146,13 @@ class ViewBaralhos(arcade.View):
         @button_save_deck_01.event
         def on_click(event):
             #Chama controller e salva no banco deck 01
-            print()
+            if self.controller.save_deck(self.deck1_list, 1) == 1:
+                #printa deck salvo 
+                pass
+            else:
+                #print nao foi possivel salvar o deck
+                pass
+
 
         button_delete_deck_01 = arcade.gui.UIFlatButton(x=855,y=120-1,text="Excluir1",height=50,width=100,style=botao_style)
         self.ui_manager.add(button_delete_deck_01)
@@ -158,7 +166,12 @@ class ViewBaralhos(arcade.View):
         @button_save_deck_02.event
         def on_click(event):
             #Chama controller e salva no banco deck 02
-            print()
+            if self.controller.save_deck(self.deck2_list, 2) == 1:
+                #printa deck salvo 
+                pass
+            else:
+                #print nao foi possivel salvar o deck
+                pass
 
         button_delete_deck_02 = arcade.gui.UIFlatButton(x=855,y=5-1,text="Excluir2",height=50,width=100,style=botao_style)
         self.ui_manager.add(button_delete_deck_02)
@@ -244,11 +257,11 @@ class ViewBaralhos(arcade.View):
             self.dragging_card = None
 
 
-def main(): 
-    window  = ViewBaralhos(1400, 750, "Montar Deck", Client())
-    arcade.run()
+# def main(): 
+#     window  = ViewBaralhos(1400, 750, "Montar Deck", Client())
+#     arcade.run()
 
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
