@@ -17,9 +17,10 @@ class Deck():
         if len(self.cards) <= DECK_SIZE:
             for c in self.cards:
                 if c.get_id == id:
-                    c.increment_quantity
+                    c.increment_quantity()
                     return
             self.cards.append(Card(id,1))
+            self.quantity += 1
         else:
             return False
 

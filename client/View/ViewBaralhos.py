@@ -4,6 +4,8 @@ import arcade.gui
 from arcade.gui import UILabel
 from arcade.gui.widgets import UIInputText
 from controller.ControllerBaralhos import *
+from controller.ControllerJogar import *
+from model.Deck import *
 from typing import List
 
 class CartaSprite(arcade.Sprite):
@@ -65,8 +67,6 @@ class DeckView():
             self.alert("Não possui carta ou mais de 3 cópias")
             return
 
-
-
         self.scale = (self.top-self.bottom)/card.height
         add_card = CartaSprite(card.filename, (card.width * self.scale * card.scale)* 2 * len(self.cards_list) + self.distance_x_between_cards * len(self.cards_list) + 100, (self.top + self.bottom)//2, self.scale * card.scale, card.id)
         self.cards_list.append(add_card)
@@ -112,12 +112,12 @@ class DeckView():
 
 class ViewBaralhos(arcade.View):
 
-    def __init__(self, controller_client: Client, controller_view:ControllerBaralhos, window, collection):
+    def __init__(self, controller_jogar: ControllerJogar, controller_view:ControllerBaralhos, window, collection):
         super().__init__()
         self.collection = collection
         self.window = window
-        self.controller_client = controller_client
         self.controller_view = controller_view
+        self.controller_jogar = controller_jogar
         
                 
         self.corEscura = arcade.color_from_hex_string("#08D8FF")
@@ -199,31 +199,54 @@ class ViewBaralhos(arcade.View):
         def on_click(event):
             self.deck_list[1].reset()
 
-
-
-
-
-
         #Botoes jogar partida
-        button_play_with_deck_01 = arcade.gui.UIFlatButton(x=1000,y=120,text="Jogar 01",height=110,width=300,style=botao_style)
-        self.ui_manager.add(button_play_with_deck_01)
+        self.button_play_with_deck_01 = arcade.gui.UIFlatButton(x=1000,y=120,text="Jogar 01",height=110,width=300,style=botao_style)
+        self.ui_manager.add(self.button_play_with_deck_01)
 
-        @button_play_with_deck_01.event
+        @self.button_play_with_deck_01.event
         def on_click(event):
             #Inicia partida com deck 01
-            print()
+            # deck = Deck([])
+            # for c in self.deck_list[0].cards_list:
+            #     deck.append_card(c.id)
+            if len(self.deck_list[0].cards_list) == 9:
+                if self.controller_jogar.define_deck(self.deck_list[0].cards_list ,1) == "In progress":
+                    self.button_play_with_deck_01.text = "Procurando partida"
+            else:
+                self.alert_deck_01(f"Deck Insuficiente {len(self.deck_list[0].cards_list)}")
+            
 
         #Botoes jogar
-        button_play_with_deck_2 = arcade.gui.UIFlatButton(x=1000,y=5,text="Jogar02",height=110,width=300,style=botao_style)
-        self.ui_manager.add(button_play_with_deck_2)
+        self.button_play_with_deck_02 = arcade.gui.UIFlatButton(x=1000,y=5,text="Jogar02",height=110,width=300,style=botao_style)
+        self.ui_manager.add(self.button_play_with_deck_02)
 
-        @button_play_with_deck_2.event
+        @self.button_play_with_deck_02.event
         def on_click(event):
             #Inicia partida com deck 02
-            print()
+            if len(self.deck_list[1].cards_list) == 9:
+                if self.controller_jogar.define_deck(self.deck_list[1].cards_list ,2) == "In progress":
+                    self.button_play_with_deck_02.text = "Procurando partida"
 
+            else:
+                self.alert_deck_02(f"Deck Insuficiente {len(self.deck_list[1].cards_list)}")
+            
+    
+    def alert_deck_01(self, msg):
+        self.button_play_with_deck_01.text = msg
+        arcade.schedule(self.stop_alert_deck_01 , 3)
+    
+    def stop_alert_deck_01(self, delta_time):
+        self.button_play_with_deck_01.text = "Jogar 01"
+        arcade.unschedule(self.alert_deck_01)
 
-
+    def alert_deck_02(self, msg):
+        self.button_play_with_deck_02.text = msg
+        arcade.schedule( self.stop_alert , 3)
+    
+    def stop_alert_deck_02(self, delta_time):
+        self.button_play_with_deck_02.text = "Jogar02"
+        arcade.unschedule(self.alert_deck_02)
+            
 
     def on_show(self):
         self.window.set_window_size(1400,750)

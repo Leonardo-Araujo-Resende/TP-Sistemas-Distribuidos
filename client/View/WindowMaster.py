@@ -2,7 +2,7 @@ import arcade
 import arcade.color
 import arcade.csscolor
 import arcade.gui
-from network.Client import *
+from controller.ControllerJogar import *
 from View.ViewBaralhos import ViewBaralhos
 from controller.ControllerBaralhos import *
 from model.Collection import *
@@ -27,7 +27,7 @@ class WindowMaster(arcade.Window):
         self.center_window()
 
     def switch_view_to_Baralho(self):
-        self.switch_view(ViewBaralhos(Client, ControllerBaralhos(self.collection, [Deck([]), Deck([])]), self,self.collection))
+        self.switch_view(ViewBaralhos(ControllerJogar(), ControllerBaralhos(self.collection, [Deck([]), Deck([])]), self,self.collection))
 
     def set_collection(self, collection):
         for c in collection:

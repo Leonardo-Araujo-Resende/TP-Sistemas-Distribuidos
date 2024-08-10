@@ -3,11 +3,13 @@ import json
 import threading
 import sqlite3
 from Controller.ControllerLoginCadastrar import *
+from Controller.ControllerJogar import *
 
 class Server():
     def __init__(self,):
         self.server = ""
         self.controller_log_cad = ControllerLoginCadastrar()
+        self.controller_jogar = ControllerJogar()
         
 
     def verify_identifier(self, conn: socket.socket):
@@ -36,11 +38,21 @@ class Server():
                     conn.sendall(f"Success".encode("utf8"))
                 else:
                     conn.sendall(f"Failed".encode("utf8"))
+            
+            elif identifier == 'define_deck':
+                self.controller_jogar.set_user_ready()
+                conn.sendall(f"In progress".encode("utf8"))
 
             elif identifier == 'salvaDeck':
                 pass
 
-                
+            if self.controller_jogar.qt_users_ready == 3:
+                pass
+            
+            conn.close()
+
+
+
     def listen(self):
         
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -51,3 +63,5 @@ class Server():
                 print(f"Connected with {addr}")
                 thread = threading.Thread(target=self.verify_identifier, args=(conn,))
                 thread.start()
+        
+            
