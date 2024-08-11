@@ -6,6 +6,7 @@ from controller.ControllerJogar import *
 from View.ViewBaralhos import ViewBaralhos
 from controller.ControllerBaralhos import *
 from model.Collection import *
+from View.ViewPartida import *
 
 class WindowMaster(arcade.Window):
 
@@ -28,6 +29,9 @@ class WindowMaster(arcade.Window):
 
     def switch_view_to_Baralho(self):
         self.switch_view(ViewBaralhos(ControllerJogar(), ControllerBaralhos(self.collection, [Deck([]), Deck([])]), self,self.collection))
+    
+    def switch_view_to_Partida(self):
+        self.switch_view(ViewPartida(self))
 
     def set_collection(self, collection):
         for c in collection:

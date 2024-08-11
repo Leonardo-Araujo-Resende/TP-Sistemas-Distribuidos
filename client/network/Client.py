@@ -24,6 +24,5 @@ class Client():
         return self.socket.recv(1024)
 
     def listen_for_server_msg(self):
-        while True:
-            return self.socket.recv(1024).decode('utf8')
+        return self.socket.recv(1024).decode('utf8')
 

@@ -4,10 +4,11 @@ import arcade.csscolor
 import arcade.gui
 
 
-class ViewPartida(arcade.Window):
+class ViewPartida(arcade.View):
 
-    def __init__(self):
-        super().__init__(1400, 750, center_window=True)
+    def __init__(self, window):
+        super().__init__()
+        self.window = window
 
     def on_draw(self):
         #Mesa
@@ -65,12 +66,6 @@ class ViewPartida(arcade.Window):
             color = arcade.color.WHITE
         )
 
+    def on_show(self):
+        self.window.set_window_size(1400,750)
 
-def main(): 
-    window = ViewPartida()
-    arcade.run()
-
-
-
-if __name__ == "__main__":
-    main()

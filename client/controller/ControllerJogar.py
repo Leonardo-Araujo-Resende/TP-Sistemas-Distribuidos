@@ -12,8 +12,9 @@ class ControllerJogar():
 
         for card in deck:
             # add id da card na msg
-            msg['deck'].append(card.filename)
+            msg['deck'].append(card.id)
         
+        print(msg)
         return self.client.send_msg(msg)
 
     def listen_game_start(self):
