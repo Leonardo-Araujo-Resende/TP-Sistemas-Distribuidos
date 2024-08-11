@@ -24,5 +24,8 @@ class Client():
         return self.socket.recv(1024)
 
     def listen_for_server_msg(self):
+        # if self.socket is None:
+        #     self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #     self.socket.connect(("0.0.0.0", 4242))
         return self.socket.recv(1024).decode('utf8')
 

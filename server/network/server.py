@@ -43,31 +43,36 @@ class Server():
         
         elif identifier == 'define_deck':
             self.controller_jogar.set_user_ready()
-            print(self.controller_jogar.qt_users_ready)
             if self.controller_jogar.qt_users_ready == 1:
                 self.controller_partida.jogador1 = conn
-                self.controller_partida.deck1 = random.shuffle(msg_dict['deck'])
+                self.controller_partida.deck1 = random.sample(msg_dict['deck'], len(msg_dict['deck']))
+                conn.sendall(f"{self.controller_jogar.qt_users_ready}".encode("utf8"))
                 
             elif self.controller_jogar.qt_users_ready == 2:
                 self.controller_partida.jogador2 = conn
-                self.controller_partida.deck2 = random.shuffle(msg_dict['deck'])
+                self.controller_partida.deck2 = random.sample(msg_dict['deck'], len(msg_dict['deck']))
+                conn.sendall(f"{self.controller_jogar.qt_users_ready}".encode("utf8"))
                 
             elif self.controller_jogar.qt_users_ready == 3:
                 self.controller_partida.jogador3 = conn
-                self.controller_partida.deck3 = random.shuffle(msg_dict['deck'])            
+                self.controller_partida.deck3 = random.sample(msg_dict['deck'], len(msg_dict['deck']))   
+                conn.sendall(f"{self.controller_jogar.qt_users_ready}".encode("utf8"))
+
                 self.controller_jogar.set_game_ready()        
-                
-            conn.sendall("In progress".encode("utf8"))
 
-        elif identifier == 'salvaDeck':
-            pass
+                self.controller_partida.jogador1.sendall("Game Ready".encode("utf8"))
+                self.controller_partida.jogador2.sendall("Game Ready".encode("utf8"))
+                self.controller_partida.jogador3.sendall("Game Ready".encode("utf8"))
 
-        if self.controller_jogar.qt_users_ready == 3:
-            #inicia jogo
-            self.controller_partida.jogador1.sendall("Game Ready".encode("utf8"))
-            self.controller_partida.jogador2.sendall("Game Ready".encode("utf8"))
-            self.controller_partida.jogador3.sendall("Game Ready".encode("utf8"))
-        
+                self.controller_partida.game_start(self.controller_partida.jogador1, self.controller_partida.jogador2, self.controller_partida.jogador3)
+
+        elif identifier == 'carta_escolhida':
+            exit()
+            card = {"jogador": msg_dict['id_player'], "carta": msg_dict['id_carta']}
+            self.controller_partida.cartas_escolhidas.append(card)
+            conn.sendall(f"chegou sua carta c id {card}".encode("utf8"))
+            
+           
         
 
 

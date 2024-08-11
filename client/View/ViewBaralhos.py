@@ -32,7 +32,7 @@ class BaralhoCompleto():
 
     def print_cards(self):
         tamanho = len(self.collection.get_cards())
-        cont = 0
+        cont = 0            
         for i in range(3):
             for j in range(10):
                 add_card = CartaSprite(f"resources/{self.collection.get_cards()[i*10+j].get_id()}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.17, int(self.collection.get_cards()[i*10+j].get_id()))
@@ -115,6 +115,7 @@ class ViewBaralhos(arcade.View):
     def __init__(self, controller_jogar: ControllerJogar, controller_view:ControllerBaralhos, window, collection):
         super().__init__()
         self.collection = collection
+
         self.window = window
         self.controller_view = controller_view
         self.controller_jogar = controller_jogar
@@ -140,6 +141,9 @@ class ViewBaralhos(arcade.View):
 
         self.deck_list.append(DeckView(0, 220, 120, 58, self.ui_manager, self.controller_view))
         self.deck_list.append(DeckView(1, 105, 5, 58, self.ui_manager, self.controller_view))
+
+        #for i in range(9):
+        #    self.deck_list[0].append_card(CartaSprite(f"resources/{self.collection.get_cards()[i].get_id()}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.17, int(self.collection.get_cards()[i].get_id())))
 
         #Carta destacada e quantidade
         self.spotted_card:CartaSprite = arcade.SpriteList()
@@ -210,12 +214,12 @@ class ViewBaralhos(arcade.View):
             # for c in self.deck_list[0].cards_list:
             #     deck.append_card(c.id)
             if len(self.deck_list[0].cards_list) == 9:
-                if self.controller_jogar.define_deck(self.deck_list[0].cards_list ,1) == "In progress":
-                    self.button_play_with_deck_02.text = "Procurando partida"
+                id = self.controller_jogar.define_deck(self.deck_list[0].cards_list ,1)
+                self.window.id_player = id
                     
-                    if self.controller_jogar.listen_game_start() == "Game Ready":
-                        self.button_play_with_deck_01.text = "Partida encontrada!!!"
-                        self.window.switch_view_to_Partida()
+                if self.controller_jogar.listen_game_start() == "Game Ready":
+                    self.button_play_with_deck_01.text = "Partida encontrada!!!"
+                    self.window.switch_view_to_Partida()
                         #troca de tela pra tela de partida
                         
             else:

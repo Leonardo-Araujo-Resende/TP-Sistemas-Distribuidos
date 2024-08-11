@@ -31,14 +31,14 @@ class ViewLoginCadastrar(arcade.View):
         self.manager.add(
             UILabel( text="Usuário*", x=self.width/2 - 270/2, y=430, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
         )
-        self.input_usuario = UIInputText(x=self.width/2 - 270/2, y=380, width=320, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+        self.input_usuario = UIInputText(text="2", x=self.width/2 - 270/2, y=380, width=320, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
         self.manager.add(self.input_usuario)
 
         #Senha
         self.manager.add(
             UILabel(text="Senha*", x=self.width/2 - 270/2, y=330, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
         )
-        self.input_senha = UIInputText(x=self.width/2 - 270/2, y=280, width=270, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+        self.input_senha = UIInputText(text="2",x=self.width/2 - 270/2, y=280, width=270, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
         self.manager.add(self.input_senha)
         
 
