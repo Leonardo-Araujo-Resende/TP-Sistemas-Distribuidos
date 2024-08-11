@@ -35,7 +35,7 @@ class BaralhoCompleto():
         cont = 0
         for i in range(3):
             for j in range(10):
-                add_card = CartaSprite(f"resources/{self.collection.get_cards()[i*10+j].get_id()}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.5, int(self.collection.get_cards()[i*10+j].get_id()))
+                add_card = CartaSprite(f"resources/{self.collection.get_cards()[i*10+j].get_id()}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.17, int(self.collection.get_cards()[i*10+j].get_id()))
                 self.cards_list.append(add_card)
                 self.cards_list.draw()
                 cont += 1
@@ -138,8 +138,8 @@ class ViewBaralhos(arcade.View):
         #baralhos
         self.deck_list: List[DeckView] = []
 
-        self.deck_list.append(DeckView(0, 220, 120, 10, self.ui_manager, self.controller_view ))
-        self.deck_list.append(DeckView(1, 105, 5, 10, self.ui_manager, self.controller_view ))
+        self.deck_list.append(DeckView(0, 220, 120, 10, self.ui_manager, self.controller_view))
+        self.deck_list.append(DeckView(1, 105, 5, 10, self.ui_manager, self.controller_view))
 
         #Carta destacada e quantidade
         self.spotted_card:CartaSprite = arcade.SpriteList()
@@ -284,7 +284,7 @@ class ViewBaralhos(arcade.View):
 
     def create_highlight_card(self, card :CartaSprite):
         self.spotted_card.clear()
-        self.spotted_card.append(CartaSprite(card.filename, 1250, 554, 1.3, card.id))
+        self.spotted_card.append(CartaSprite(card.filename, 1250, 554, 0.48, card.id))
         self.text_quantity.text = f"Quantidade nao usada: {self.controller_view.collection.get_quantity_by_id(card.id)}"
             
                 

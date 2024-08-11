@@ -17,7 +17,6 @@ class Client():
     def send_to_server(self, msg):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect(("0.0.0.0", 4242))
-            self.current_message = "..."
             s.sendall(bytes(msg, encoding= "utf-8"))
             return s.recv(1024)
 

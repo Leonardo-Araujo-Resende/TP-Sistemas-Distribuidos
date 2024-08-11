@@ -54,7 +54,6 @@ class Server():
 
 
     def listen(self):
-        
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind(("0.0.0.0", 4242))
             s.listen()

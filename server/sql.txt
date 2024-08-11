@@ -1,0 +1,95 @@
+bd_conn = sqlite3.connect('corrida_maluca.db')
+    c = bd_conn.cursor()
+    c.execute("""CREATE TABLE IF NOT EXISTS users (
+                username TEXT NOT NULL,
+                password TEXT NOT NULL
+                )""")
+    
+    c.execute("""CREATE TABLE IF NOT EXISTS cards (
+                username TEXT NOT NULL,
+                filename TEXT NOT NULL,
+                FOREIGN KEY(username) REFERENCES users(username)
+                )""")
+    
+    c.execute("""CREATE TABLE IF NOT EXISTS decks (
+                username TEXT NOT NULL,
+                deck_id INTEGER NOT NULL,
+                card_filename TEXT NOT NULL,
+                FOREIGN KEY(username) REFERENCES users(username)
+                )""")
+    c.execute("""CREATE TABLE IF NOT EXISTS card_list (
+                name TEXT NOT NULL,
+                gimmick TEXT,
+                speed INT,
+                accel INT,
+                weight INT,
+                capacity INT,
+                resistance INT
+                )""")
+
+    cards_data = [
+        ('BARBIE', 'GUARDA', 6, 5, 3, 4, 4),
+        ('BATMAN', 'DANO', 8, 6, 5, 2, 5),
+        ('BAYMAX', 'VOO', 6, 5, 5, 4, 5),
+        ('BOWSER', 'GUARDA', 7, 6, 6, 5, 5),
+        ('BUMBLEBEE', 'DANO', 8, 7, 5, 4, 5),
+        ('CADU MAVERICK', 'TURBO', 8, 7, 4, 2, 5),
+        ('CAPITÃO CAVERNA', 'DANO', 5, 4, 7, 4, 5),
+        ('CROCKER', 'DANO', 6, 5, 4, 4, 4),
+        ('DOUTOR BROWN', 'TURBO', 8, 6, 4, 2, 5),
+        ('DICK VIGARISTA', 'DANO', 5, 5, 5, 4, 4),
+        ('DONATELLO', 'DANO', 7, 6, 4, 3, 5),
+        ('ELI SHANE', 'DANO', 7, 6, 4, 3, 5),
+        ('FRED FLINTSTONE', 'GUARDA', 4, 3, 6, 6, 3),
+        ('FRED JONES', 'GUARDA', 5, 4, 6, 5, 5),
+        ('JIM HAWKINS', 'VOO', 7, 6, 4, 3, 5),
+        ('JIMMY NEUTRON', 'VOO', 7, 8, 4, 2, 5),
+        ('JAKE', 'GUARDA', 7, 6, 5, 3, 5),
+        ('JETSONS', 'VOO', 6, 5, 3, 5, 5),
+        ('KANEDA', 'TURBO', 9, 5, 2, 2, 3),
+        ('KICK BUTTOWSKI', 'GUARDA', 7, 8, 3, 2, 4),
+        ('LINK', 'DANO', 7, 5, 3, 4, 5),
+        ('LATA-VELHA', 'GUARDA', 4, 3, 6, 5, 3),
+        ('MARIO', 'DANO', 7, 7, 4, 3, 5),
+        ('MATE', 'GUARDA', 5, 4, 7, 3, 5),
+        ('MAX STEEL', 'TURBO', 8, 6, 4, 3, 5),
+        ('MCQUEEN', 'TURBO', 9, 7, 3, 1, 4),
+        ('MOANA', 'TURBO', 7, 6, 4, 4, 5),
+        ('MOTOQUEIRO FANTASMA', 'DANO', 8, 7, 4, 3, 5),
+        ('MULHER-MARAVILHA', 'VOO', 8, 6, 4, 3, 5),
+        ('REX', 'VOO', 8, 7, 5, 3, 5),
+        ('OPTIMUS PRIME', 'GUARDA', 8, 7, 7, 5, 6),
+        ('PAPA LÉGUAS', 'TURBO', 9, 9, 2, 1, 3),
+        ('PAI DO TIMMY', 'TURBO', 6, 5, 5, 4, 4),
+        ('PATETA', 'GUARDA', 5, 4, 5, 3, 4),
+        ('PEABODY', 'GUARDA', 7, 5, 3, 5, 5),
+        ('PENELOPE CHARMOSA', 'TURBO', 6, 6, 4, 4, 5),
+        ('SENHOR INCRÍVEL', 'DANO', 7, 5, 6, 4, 5),
+        ('SENNA', 'TURBO', 9, 9, 3, 1, 4),
+        ('SHREK', 'GUARDA', 5, 4, 7, 6, 4),
+        ('SOLUÇO', 'VOO', 7, 5, 4, 3, 4),
+        ('SONIC', 'TURBO', 9, 9, 1, 1, 2),
+        ('SPEED RACER', 'TURBO', 5, 9, 8, 2, 3),
+        ('STITCH', 'VOO', 7, 6, 4, 4, 5),
+        ('TAILS', 'VOO', 7, 6, 3, 4, 5),
+        ('THAÍS', 'DANO', 7, 6, 4, 4, 5),
+        ('THANOS', 'VOO', 7, 6, 5, 3, 4),
+        ('THOMAS O TRENZINHO', 'TURBO', 5, 4, 8, 7, 4),
+        ('TRÊS ESPIÃS DEMAIS', 'DANO', 7, 6, 4, 3, 5),
+        ('TRON', 'TURBO', 9, 7, 2, 2, 4),
+        ('VERT', 'TURBO', 8, 7, 4, 2, 5),
+        ('VETOR', 'VOO', 6, 5, 4, 4, 4),
+        ('VIOLETA E FLECHA', 'GUARDA', 8, 9, 3, 3, 5),
+        ('WILBUR', 'VOO', 7, 6, 4, 4, 5),
+        ('YUSEI', 'DANO', 8, 7, 4, 2, 4),
+        ('ZAK SÁBADO', 'VOO', 7, 6, 4, 3, 5)
+    ]
+
+    c.executemany("""
+    INSERT INTO card_list (name, gimmick, speed, accel, weight, capacity, resistance)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+    """, cards_data)
+
+
+    bd_conn.commit()
+    bd_conn.close()
