@@ -38,4 +38,6 @@ class ControllerBaralhos():
                 if card.get_id() == card_in_collection.get_id():
                     card_in_collection.increment_quantity()
                     break
-        self.decks[deck_index].reset_deck()                
+        self.decks[deck_index].reset_deck()
+
+            

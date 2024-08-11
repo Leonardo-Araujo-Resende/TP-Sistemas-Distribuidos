@@ -6,6 +6,7 @@ class Client():
     
     def __init__(self):
         self.username = ""
+        self.socket = None
 
 
     def send_msg(self, msg):
@@ -15,8 +16,14 @@ class Client():
 
 
     def send_to_server(self, msg):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect(("0.0.0.0", 4242))
-            s.sendall(bytes(msg, encoding= "utf-8"))
-            return s.recv(1024)
+        if self.socket is None:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.connect(("0.0.0.0", 4242))
+        
+        self.socket.sendall(bytes(msg, encoding= "utf-8"))
+        return self.socket.recv(1024)
+
+    def listen_for_server_msg(self):
+        while True:
+            return self.socket.recv(1024).decode('utf8')
 

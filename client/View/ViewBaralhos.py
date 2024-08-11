@@ -212,6 +212,11 @@ class ViewBaralhos(arcade.View):
             if len(self.deck_list[0].cards_list) == 9:
                 if self.controller_jogar.define_deck(self.deck_list[0].cards_list ,1) == "In progress":
                     self.button_play_with_deck_01.text = "Procurando partida"
+                    while True:
+                        if self.controller_jogar.listen_game_start() == "Game Ready":
+                            self.button_play_with_deck_02.text = "Partida encontrada!!!"
+                            #troca de tela pra tela de partida
+                            pass
             else:
                 self.alert_deck_01(f"Deck Insuficiente {len(self.deck_list[0].cards_list)}")
             
@@ -226,7 +231,11 @@ class ViewBaralhos(arcade.View):
             if len(self.deck_list[1].cards_list) == 9:
                 if self.controller_jogar.define_deck(self.deck_list[1].cards_list ,2) == "In progress":
                     self.button_play_with_deck_02.text = "Procurando partida"
-
+                    while True:
+                        if self.controller_jogar.listen_game_start() == "Game Ready":
+                            self.button_play_with_deck_02.text = "Partida encontrada!!!"
+                            #troca de tela pra tela de partida
+                            pass
             else:
                 self.alert_deck_02(f"Deck Insuficiente {len(self.deck_list[1].cards_list)}")
             

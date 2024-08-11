@@ -4,12 +4,14 @@ import threading
 import sqlite3
 from Controller.ControllerLoginCadastrar import *
 from Controller.ControllerJogar import *
+from Controller.ControllerPartida import *
 
 class Server():
-    def __init__(self,):
+    def __init__(self, all_cards):
         self.server = ""
         self.controller_log_cad = ControllerLoginCadastrar()
         self.controller_jogar = ControllerJogar()
+        self.controller_partida = ControllerPartida(all_cards)
         
 
     def verify_identifier(self, conn: socket.socket):
@@ -41,15 +43,30 @@ class Server():
             
             elif identifier == 'define_deck':
                 self.controller_jogar.set_user_ready()
-                conn.sendall(f"In progress".encode("utf8"))
+                
+                if self.controller_jogar.qt_users_ready == 1:
+                    self.controller_partida.jogador1 = conn
+                    self.controller_partida.deck1 = random.shuffle(msg_dict['deck'])
+                    
+                elif self.controller_jogar.qt_users_ready == 2:
+                    self.controller_partida.jogador2 = conn
+                    self.controller_partida.deck2 = random.shuffle(msg_dict['deck'])
+                    
+                elif self.controller_jogar.qt_users_ready == 3:
+                    self.controller_partida.jogador3 = conn
+                    self.controller_partida.deck3 = random.shuffle(msg_dict['deck'])                    
+                    
+                conn.sendall("In progress".encode("utf8"))
 
             elif identifier == 'salvaDeck':
                 pass
 
             if self.controller_jogar.qt_users_ready == 3:
-                pass
+                #inicia jogo
+                self.controller_partida.jogador1.sendall("Game Ready".encode("utf8"))
+                self.controller_partida.jogador2.sendall("Game Ready".encode("utf8"))
+                self.controller_partida.jogador3.sendall("Game Ready".encode("utf8"))
             
-            conn.close()
 
 
 

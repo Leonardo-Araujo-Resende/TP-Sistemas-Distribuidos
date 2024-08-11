@@ -10,10 +10,11 @@ class ControllerJogar():
        
         msg = {"op": "define_deck", "deck_index": index_deck, "deck": []}
 
-        for card in deck.cards:
+        for card in deck:
             # add id da card na msg
-            msg['deck'].append(card.id)
+            msg['deck'].append(card.filename)
         
         return self.client.send_msg(msg)
 
-   
+    def listen_game_start(self):
+        return self.client.listen_for_server_msg()        
