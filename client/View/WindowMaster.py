@@ -11,7 +11,7 @@ from View.ViewPartida import *
 class WindowMaster(arcade.Window):
 
     def __init__(self):
-        super().__init__(1400, 750, "Janela Principal", center_window=True)
+        super().__init__(1400, 750, "Janela Principal", center_window=True, resizable=True)
         self.collection:Collection = Collection([])
         self.cliente = Client()
         self.id_player = 0
@@ -33,7 +33,7 @@ class WindowMaster(arcade.Window):
         self.switch_view(ViewBaralhos(ControllerJogar(self.cliente), ControllerBaralhos(self.collection, [Deck([]), Deck([])]), self,self.collection))
     
     def switch_view_to_Partida(self):
-        self.switch_view( ViewPartida(self,self.cliente))
+        self.switch_view( ViewPartida(self, self.cliente) )
 
     def set_collection(self, collection):
         for c in collection:

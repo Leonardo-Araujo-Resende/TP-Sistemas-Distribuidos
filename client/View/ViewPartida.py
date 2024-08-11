@@ -30,17 +30,28 @@ class ViewPartida(arcade.View):
         self.used_card_x = None
         
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
-        
-        mao_inicial = self.controller_partida.remove_colchete(self.controller_partida.listen_game_start())
+        msg = self.controller_partida.listen_game_start()
+
+        mao_inicial, atributo = msg.split(" - ")
+        print(atributo)
+        mao_inicial = self.controller_partida.remove_colchete(mao_inicial)
+        self.first_3_cards(mao_inicial)
+
+        self.atributo = UILabel(text= f"Atributo Selecionado: {atributo}", x=700 - 250, y=675, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.manager.add( self.atributo )
+
+    def first_3_cards(self, mao_inicial):
         x = 525
         y = 130
         for i in range(3):
             self.cartas_sprites.append(CartaSprite(f"resources/{mao_inicial[i]}.png", x, y, 0.25, mao_inicial[i]))
             x += 175
 
-        self.debug = UILabel(text="vai aparecer aq", x=400, y=300, width=600, height=400, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
-        self.manager.add( self.debug )
+    def update_atributo(self, msg):
+        self.atributo.text = f"Atributo selecionado: {msg}"
 
+    def recieved_card(self, id):
+        self.cartas_sprites.append(CartaSprite(f"resources/{id}.png", self.used_card_x, 130, 0.25, id))
 
     def on_draw(self):
         self.clear()
@@ -122,11 +133,7 @@ class ViewPartida(arcade.View):
                 self.used_card_x = self.dragging_card.init_x
 
                 id = self.dragging_card.id
-                self.debug.text = f"{id} {self.window.id_player}"
-                
-                # text = self.controller_partida.send_chosen_card(id,self.window.id_player)
-                # self.debug.text = text
-                # print(text)
+                self.controller_partida.send_chosen_card( id, self.window.id_player)
             else:
                 self.dragging_card.center_x = self.dragging_card.init_x
                 self.dragging_card.center_y = self.dragging_card.init_y
