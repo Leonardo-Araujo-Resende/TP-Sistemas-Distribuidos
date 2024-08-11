@@ -138,8 +138,8 @@ class ViewBaralhos(arcade.View):
         #baralhos
         self.deck_list: List[DeckView] = []
 
-        self.deck_list.append(DeckView(0, 220, 120, 10, self.ui_manager, self.controller_view))
-        self.deck_list.append(DeckView(1, 105, 5, 10, self.ui_manager, self.controller_view))
+        self.deck_list.append(DeckView(0, 220, 120, 58, self.ui_manager, self.controller_view))
+        self.deck_list.append(DeckView(1, 105, 5, 58, self.ui_manager, self.controller_view))
 
         #Carta destacada e quantidade
         self.spotted_card:CartaSprite = arcade.SpriteList()
