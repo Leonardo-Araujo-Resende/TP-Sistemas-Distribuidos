@@ -8,7 +8,7 @@ class ControllerPartida():
         self.client = cliente
 
     
-    def listen_game_start(self):
+    def listen_game_finish(self):
         return self.client.listen_for_server_msg()    
 
     def remove_colchete(self, msg):

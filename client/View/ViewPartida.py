@@ -2,6 +2,7 @@ import arcade
 import arcade.color
 import arcade.csscolor
 import logging
+import time
 import arcade.gui
 from arcade.gui import UILabel
 from controller.ControllerPartida import *
@@ -32,19 +33,21 @@ class ViewPartida(arcade.View):
         self.used_card_x = None
         
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
-        msg = self.controller_partida.listen_game_start()
+        msg = self.controller_partida.listen_game_finish()
 
         mao_inicial, atributo = msg.split(" - ")
-        print(atributo)
+        
         mao_inicial = self.controller_partida.remove_colchete(mao_inicial)
         self.first_3_cards(mao_inicial)
 
-        self.atributo = UILabel(text= f"Atributo Selecionado: {atributo}", x=700 - 250, y=675, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.atributo = UILabel(text= f"Atributo Selecionado: {atributo}", x=700 - 250, y=625, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
         self.manager.add( self.atributo )
 
-        self.avisos = UILabel(text= f"oi", x=70, y=675, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.avisos = UILabel(text= f"", x=50, y=675, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
         self.manager.add( self.avisos )
 
+        self.id_jogador = UILabel(text= f"Voce é o jogador: {self.window.id_player}", x=1100, y=675, width=250, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.manager.add( self.id_jogador )
 
     def first_3_cards(self, mao_inicial):
         x = 400
@@ -58,11 +61,14 @@ class ViewPartida(arcade.View):
 
     def recieved_card(self, id):
         self.cartas_sprites.append(CartaSprite(f"resources/{id}.png", self.used_card_x, 150, 0.35, id))
-
-    def on_draw(self):
+    
+    def desenha(self):
         self.clear()
         self.manager.draw()
         self.cartas_sprites.draw()
+
+    def on_draw(self):
+        self.desenha()
         #Mesa
         arcade.draw_lrtb_rectangle_outline(
             left = 20,
@@ -71,25 +77,6 @@ class ViewPartida(arcade.View):
             bottom = 300,
             color = arcade.color.WHITE
         )
-
-        #Baralho
-        arcade.draw_lrtb_rectangle_outline(
-            left = 1200,
-            right = 1350,
-            top = 240,
-            bottom = 20,
-            color = arcade.color.WHITE
-        )
-
-        #Cemiterio
-        arcade.draw_lrtb_rectangle_outline(
-            left = 50,
-            right = 200,
-            top = 240,
-            bottom = 20,
-            color = arcade.color.WHITE
-        )
-
 
     def on_show(self):
         self.window.set_window_size(1400,750)
@@ -111,20 +98,36 @@ class ViewPartida(arcade.View):
                 self.dragging_card.center_y = 500
                 self.used_card_x = self.dragging_card.init_x
                 id = self.dragging_card.id      
-                self.cont_rodadas += 1 
+                self.cont_rodadas += 1
+                    
                 msg = self.controller_partida.send_chosen_card( id, self.window.id_player)
 
                 if self.cont_rodadas < 7:
                     vencedor, nova_carta, atributo = msg.split(" - ")
-                    self.exibe_msg_aviso(f"O jogador {vencedor} ganhou a rodada")
+                    self.exibe_msg_aviso(f"O jogador {vencedor} ganhou a rodada {self.cont_rodadas}")
                     self.update_atributo(atributo)
                     self.cartas_sprites.remove(self.dragging_card)
                     self.recieved_card(nova_carta)
+
                 else:
                     vencedor, atributo = msg.split(" - ")
-                    self.exibe_msg_aviso(f"O jogador {vencedor} ganhou a rodada")
+                    self.exibe_msg_aviso(f"O jogador {vencedor} ganhou a rodada {self.cont_rodadas}")
                     self.update_atributo(atributo)
                     self.cartas_sprites.remove(self.dragging_card)
+                    
+                
+                if self.cont_rodadas == 9:
+                    self.update_atributo(f"Esperando game finish!")
+                    id = self.controller_partida.listen_game_finish()
+                    if int(id) == int(self.window.id_player):
+                        print("Venci!!!!") 
+                        self.update_atributo(f"Voce venceu!")
+                    else:
+                        print(f"O jogador {id} venceu!!!!") 
+                        self.update_atributo(f"Jogador vencedor: {id}")
+                    
+                    #time.sleep(10)
+                    #exit(0)
 
             else:
                 self.dragging_card.center_x = self.dragging_card.init_x

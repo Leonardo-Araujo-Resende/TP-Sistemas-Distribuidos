@@ -4,6 +4,9 @@ import json
 
 class ControllerPartida():
     def __init__(self, all_cards):
+        self.username1 = None
+        self.username2 = None
+        self.username3 = None
         self.jogador1 = None
         self.deck1 = None
         self.jogador2 = None
@@ -45,13 +48,13 @@ class ControllerPartida():
             indices_menor_valor = [i for i, valor in enumerate(personagens_pontos) if valor == menor_valor]
             resultado = random.choice(indices_menor_valor) + 1
 
-            return f"personagem{resultado}"
+            return f"{resultado}"
 
         else:
             personagens = {
-                'personagem1': personagem1[atributo],
-                'personagem2': personagem2[atributo],
-                'personagem3': personagem3[atributo]
+                '1': personagem1[atributo],
+                '2': personagem2[atributo],
+                '3': personagem3[atributo]
             }
             maior_valor = max(personagens.values())
             maiores = [nome for nome, valor in personagens.items() if valor == maior_valor]
@@ -76,11 +79,13 @@ class ControllerPartida():
             vencedores.append(3)
         
 
-        return f"O jogador {vencedores[0]} ganhou!"
         if len(vencedores) == 1:
-            return f"O jogador {vencedores[0]} ganhou!"
+            return vencedores[0]
         else:
-            return f"Empate entre os jogadores: {', '.join(map(str, vencedores))}"
+            vencedor_final = random.choice(vencedores)
+            return vencedor_final
+
+        
 
    
     def game_start(self,conn1, conn2, conn3):
@@ -134,7 +139,7 @@ class ControllerPartida():
                 self.cemiterio3.append(card2["carta"])
                 self.cemiterio3.append(card3["carta"])
             
-            atributos = ["velocidade", "aceleracao", "peso", "capacidade", "resistencia", "truque"]
+            atributos = ["Velocidade", "Aceleração", "Peso", "Capacidade", "Resistência", "Truque"]
             atributos_ingles = ["speed", "accel", "weight", "capacity", "resistance", "gimmick"]
             index_random = random.randint(0, 5)
             self.atributo_rodada = atributos_ingles[index_random]
@@ -153,9 +158,28 @@ class ControllerPartida():
             
             self.cartas_escolhidas = []
 
-        logging.basicConfig(level=logging.DEBUG)
-        logger = logging.getLogger(__name__)
-        logger.debug(self.verificar_vencedor(self.cemiterio1, self.cemiterio2, self.cemiterio3))
+        id_jogador_vencedor = self.verificar_vencedor(self.cemiterio1, self.cemiterio2, self.cemiterio3)
+        
+        # if id_jogador_vencedor == 1:
+        #     index_random = random.randint(0, len(self.cemiterio1))
+        #     carta_recebida = self.cemiterio1[index_random]
+        # elif id_jogador_vencedor == 2:
+        #     index_random = random.randint(0, len(self.cemiterio2))
+        #     carta_recebida = self.cemiterio2[index_random]
+        # elif id_jogador_vencedor == 3:
+        #     index_random = random.randint(0, len(self.cemiterio3))
+        #     carta_recebida = self.cemiterio3[index_random]
+        
+        
+        conn1.sendall(f"{id_jogador_vencedor}".encode("utf8"))
+        conn2.sendall(f"{id_jogador_vencedor}".encode("utf8"))
+        conn3.sendall(f"{id_jogador_vencedor}".encode("utf8"))
+
+        conn1.close()
+        conn2.close()
+        conn3.close()
+
+        exit()
     
         
 

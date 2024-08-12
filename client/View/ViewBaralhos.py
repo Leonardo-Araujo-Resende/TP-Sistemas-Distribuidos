@@ -141,10 +141,11 @@ class ViewBaralhos(arcade.View):
 
         self.deck_list.append(DeckView(0, 220, 120, 58, self.ui_manager, self.controller_view))
         self.deck_list.append(DeckView(1, 105, 5, 58, self.ui_manager, self.controller_view))
-
-        for i in range(9):
-            card = self.collection.get_cards()[i]
-            self.deck_list[0].append_card( CartaSprite(f"resources/{card.id}.png", 50, 50, 0.15, card.id))
+        
+        #Preencher baralhos para acelerar testes
+        #for i in range(9):
+        #    card = self.collection.get_cards()[i]
+        #    self.deck_list[0].append_card( CartaSprite(f"resources/{card.id}.png", 50, 50, 0.15, card.id))
 
         #Carta destacada e quantidade
         self.spotted_card:CartaSprite = arcade.SpriteList()
@@ -314,12 +315,3 @@ class ViewBaralhos(arcade.View):
 
             self.dragging_card = None
 
-
-# def main(): 
-#     window  = ViewBaralhos(1400, 750, "Montar Deck", Client())
-#     arcade.run()
-
-
-
-# if __name__ == "__main__":
-#     main()
