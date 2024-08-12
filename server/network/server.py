@@ -1,5 +1,6 @@
 import socket
 import json
+import time
 import threading
 import sqlite3
 import logging
@@ -25,10 +26,7 @@ class Server():
         #editar para aceitar outras mensagens alem de logar e cadastrar
         identifier = msg_dict['op']
         
-        logging.basicConfig(level=logging.DEBUG)
-        logger = logging.getLogger(__name__)
-
-        logger.debug(f"{identifier}")
+       
 
         if identifier == 'login':
             username, password = msg_dict['username'], msg_dict['password']
@@ -64,6 +62,8 @@ class Server():
                 self.controller_partida.jogador3 = conn
                 self.controller_partida.deck3 = random.sample(msg_dict['deck'], len(msg_dict['deck']))   
                 conn.sendall(f"{self.controller_jogar.qt_users_ready}".encode("utf8"))
+
+                time.sleep(1)
 
                 self.controller_jogar.set_game_ready()        
 

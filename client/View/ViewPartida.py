@@ -1,6 +1,7 @@
 import arcade 
 import arcade.color
 import arcade.csscolor
+import logging
 import arcade.gui
 from arcade.gui import UILabel
 from controller.ControllerPartida import *
@@ -22,6 +23,7 @@ class ViewPartida(arcade.View):
         super().__init__()
         self.window = window
         self.controller_partida = ControllerPartida(client)
+        self.cont_rodadas = 0
 
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
@@ -40,18 +42,22 @@ class ViewPartida(arcade.View):
         self.atributo = UILabel(text= f"Atributo Selecionado: {atributo}", x=700 - 250, y=675, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
         self.manager.add( self.atributo )
 
+        self.avisos = UILabel(text= f"oi", x=70, y=675, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.manager.add( self.avisos )
+
+
     def first_3_cards(self, mao_inicial):
-        x = 525
-        y = 130
+        x = 400
+        y = 150
         for i in range(3):
-            self.cartas_sprites.append(CartaSprite(f"resources/{mao_inicial[i]}.png", x, y, 0.25, mao_inicial[i]))
-            x += 175
+            self.cartas_sprites.append(CartaSprite(f"resources/{mao_inicial[i]}.png", x, y, 0.35, mao_inicial[i]))
+            x += 250
 
     def update_atributo(self, msg):
         self.atributo.text = f"Atributo selecionado: {msg}"
 
     def recieved_card(self, id):
-        self.cartas_sprites.append(CartaSprite(f"resources/{id}.png", self.used_card_x, 130, 0.25, id))
+        self.cartas_sprites.append(CartaSprite(f"resources/{id}.png", self.used_card_x, 150, 0.35, id))
 
     def on_draw(self):
         self.clear()
@@ -85,33 +91,6 @@ class ViewPartida(arcade.View):
         )
 
 
-        #Cartas no centro
-        arcade.draw_lrtb_rectangle_outline(
-            left = 625,
-            right = 775,
-            top = 240,
-            bottom = 20,
-            color = arcade.color.WHITE
-        )
-
-        #Cartas direita
-        arcade.draw_lrtb_rectangle_outline(
-            left = 800,
-            right = 950,
-            top = 240,
-            bottom = 20,
-            color = arcade.color.WHITE
-        )
-
-        #Cartas esquerda
-        arcade.draw_lrtb_rectangle_outline(
-            left = 450,
-            right = 600,
-            top = 240,
-            bottom = 20,
-            color = arcade.color.WHITE
-        )
-
     def on_show(self):
         self.window.set_window_size(1400,750)
 
@@ -131,13 +110,27 @@ class ViewPartida(arcade.View):
                 self.dragging_card.center_x = 700
                 self.dragging_card.center_y = 500
                 self.used_card_x = self.dragging_card.init_x
+                id = self.dragging_card.id      
+                self.cont_rodadas += 1 
+                msg = self.controller_partida.send_chosen_card( id, self.window.id_player)
 
-                id = self.dragging_card.id
-                self.controller_partida.send_chosen_card( id, self.window.id_player)
+                if self.cont_rodadas < 7:
+                    vencedor, nova_carta, atributo = msg.split(" - ")
+                    self.exibe_msg_aviso(f"O jogador {vencedor} ganhou a rodada")
+                    self.update_atributo(atributo)
+                    self.cartas_sprites.remove(self.dragging_card)
+                    self.recieved_card(nova_carta)
+                else:
+                    vencedor, atributo = msg.split(" - ")
+                    self.exibe_msg_aviso(f"O jogador {vencedor} ganhou a rodada")
+                    self.update_atributo(atributo)
+                    self.cartas_sprites.remove(self.dragging_card)
+
             else:
                 self.dragging_card.center_x = self.dragging_card.init_x
                 self.dragging_card.center_y = self.dragging_card.init_y
 
-
             self.dragging_card = None
 
+    def exibe_msg_aviso(self, msg):
+        self.avisos.text = msg

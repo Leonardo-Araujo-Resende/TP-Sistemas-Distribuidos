@@ -142,8 +142,9 @@ class ViewBaralhos(arcade.View):
         self.deck_list.append(DeckView(0, 220, 120, 58, self.ui_manager, self.controller_view))
         self.deck_list.append(DeckView(1, 105, 5, 58, self.ui_manager, self.controller_view))
 
-        #for i in range(9):
-        #    self.deck_list[0].append_card(CartaSprite(f"resources/{self.collection.get_cards()[i].get_id()}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.17, int(self.collection.get_cards()[i].get_id())))
+        for i in range(9):
+            card = self.collection.get_cards()[i]
+            self.deck_list[0].append_card( CartaSprite(f"resources/{card.id}.png", 50, 50, 0.15, card.id))
 
         #Carta destacada e quantidade
         self.spotted_card:CartaSprite = arcade.SpriteList()

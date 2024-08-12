@@ -12,11 +12,6 @@ class Client():
 
     def send_msg(self, msg):
 
-        logging.basicConfig(level=logging.DEBUG)
-        logger = logging.getLogger(__name__)
-        arcade_logger = logging.getLogger('arcade')
-        arcade_logger.setLevel(logging.WARNING)
-        logger.debug(f"send msg {msg}")
 
         msg_json = json.dumps(msg)
         server_msg = self.send_to_server(msg_json)
