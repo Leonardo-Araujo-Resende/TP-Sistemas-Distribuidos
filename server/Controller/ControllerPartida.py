@@ -1,6 +1,7 @@
 import random
 import logging
 import json
+import sqlite3
 
 class ControllerPartida():
     def __init__(self, all_cards):
@@ -160,21 +161,69 @@ class ControllerPartida():
 
         id_jogador_vencedor = self.verificar_vencedor(self.cemiterio1, self.cemiterio2, self.cemiterio3)
         
-        # if id_jogador_vencedor == 1:
-        #     index_random = random.randint(0, len(self.cemiterio1))
-        #     carta_recebida = self.cemiterio1[index_random]
-        # elif id_jogador_vencedor == 2:
-        #     index_random = random.randint(0, len(self.cemiterio2))
-        #     carta_recebida = self.cemiterio2[index_random]
-        # elif id_jogador_vencedor == 3:
-        #     index_random = random.randint(0, len(self.cemiterio3))
-        #     carta_recebida = self.cemiterio3[index_random]
         
         
         conn1.sendall(f"{id_jogador_vencedor}".encode("utf8"))
         conn2.sendall(f"{id_jogador_vencedor}".encode("utf8"))
         conn3.sendall(f"{id_jogador_vencedor}".encode("utf8"))
 
+        #inserir carta recebida no banco (n funciona)
+        # if id_jogador_vencedor == 1:
+        #     username = conn1.recv(1024)
+        #     msg_dict = json.loads(username.decode("utf8"))
+            
+        #     index_random = random.randint(0, len(self.cemiterio1))
+        #     carta_recebida = self.cemiterio1[index_random]
+        
+        #     bd_conn = sqlite3.connect('corrida_maluca.db')
+        #     c = bd_conn.cursor()
+        #     c.execute("""
+        #         INSERT INTO cards (username, filename) 
+        #         VALUES (?, ?)
+        #         """, (msg_dict['username'], carta_recebida))
+
+        #     bd_conn.commit()
+        #     bd_conn.close()
+        #     conn1.sendall(f"{carta_recebida}".encode("utf8"))
+
+        # elif id_jogador_vencedor == 2:
+        #     username = conn2.recv(1024)
+        #     msg_dict = json.loads(username.decode("utf8"))
+            
+        #     index_random = random.randint(0, len(self.cemiterio2))
+        #     carta_recebida = self.cemiterio2[index_random]
+
+        #     bd_conn = sqlite3.connect('corrida_maluca.db')
+        #     c = bd_conn.cursor()
+        #     c.execute("""
+        #         INSERT INTO cards (username, filename) 
+        #         VALUES (?, ?)
+        #         """, (msg_dict['username'], carta_recebida))
+
+        #     bd_conn.commit()
+        #     bd_conn.close()
+        #     conn2.sendall(f"{carta_recebida}".encode("utf8"))
+
+        # elif id_jogador_vencedor == 3:
+        #     username = conn3.recv(1024)
+        #     msg_dict = json.loads(username.decode("utf8"))
+            
+        #     index_random = random.randint(0, len(self.cemiterio3))
+        #     carta_recebida = self.cemiterio3[index_random]
+
+        #     bd_conn = sqlite3.connect('corrida_maluca.db')
+        #     c = bd_conn.cursor()
+        #     c.execute("""
+        #         INSERT INTO cards (username, filename) 
+        #         VALUES (?, ?)
+        #         """, (msg_dict['username'], carta_recebida))
+
+        #     bd_conn.commit()
+        #     bd_conn.close()
+        #     conn3.sendall(f"{carta_recebida}".encode("utf8"))
+        
+
+            
         conn1.close()
         conn2.close()
         conn3.close()
