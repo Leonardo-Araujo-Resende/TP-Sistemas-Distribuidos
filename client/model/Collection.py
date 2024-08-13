@@ -24,7 +24,7 @@ class Collection():
 
     def append_card(self, id):
         for c in self.cards:
-            if c.get_id() == id:
+            if int(c.get_id()) == int(id):
                 c.increment_quantity()
                 return
         self.cards.append(Card(int(id), 1))

@@ -12,7 +12,7 @@ class ControllerLoginCadastrar():
         msg = { "op": "login",
                 "username": username,
                 "password": password}
-        # return self.client.send_msg(msg)
+        
         response = self.client.send_msg(msg)
         try:
             # Tenta carregar a mensagem como JSON

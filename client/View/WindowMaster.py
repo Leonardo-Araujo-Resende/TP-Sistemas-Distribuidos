@@ -15,6 +15,7 @@ class WindowMaster(arcade.Window):
         self.collection:Collection = Collection([])
         self.cliente = Client()
         self.id_player = 0
+        self.username = ""
 
         self.cor_escura = arcade.color_from_hex_string("#08D8FF")
         self.cor_clara = arcade.color_from_hex_string("#220B60")    

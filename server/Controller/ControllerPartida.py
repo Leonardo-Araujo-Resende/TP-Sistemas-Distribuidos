@@ -2,6 +2,8 @@ import random
 import logging
 import json
 import sqlite3
+import time
+import threading
 
 class ControllerPartida():
     def __init__(self, all_cards):
@@ -68,18 +70,17 @@ class ControllerPartida():
         tamanho2 = len(cemiterio2)
         tamanho3 = len(cemiterio3)
         
-        menor_tamanho = max(tamanho1, tamanho2, tamanho3)
+        maior = max(tamanho1, tamanho2, tamanho3)
         
         vencedores = []
         
-        if tamanho1 == menor_tamanho:
+        if tamanho1 == maior:
             vencedores.append(1)
-        if tamanho2 == menor_tamanho:
+        if tamanho2 == maior:
             vencedores.append(2)
-        if tamanho3 == menor_tamanho:
+        if tamanho3 == maior:
             vencedores.append(3)
         
-
         if len(vencedores) == 1:
             return vencedores[0]
         else:
@@ -99,46 +100,56 @@ class ControllerPartida():
         mao_player2 = self.deck2[:3]
         mao_player3 = self.deck3[:3]
         
+
+        cont = 0
+
         conn1.sendall(f"{mao_player1} - {atributos[index_random]}".encode("utf8"))
         conn2.sendall(f"{mao_player2} - {atributos[index_random]}".encode("utf8"))
         conn3.sendall(f"{mao_player3} - {atributos[index_random]}".encode("utf8"))
 
+        cont += 1
+        
         contador_deck = 3
-        for x in range(9):
-            msg1 = conn1.recv(1024)
-            msg2 = conn2.recv(1024)
-            msg3 = conn3.recv(1024)
-            
-            msg1_dict = json.loads(msg1.decode("utf8"))
-            msg2_dict = json.loads(msg2.decode("utf8"))
-            msg3_dict = json.loads(msg3.decode("utf8"))
+        barrier = threading.Barrier(3)
 
+        for x in range(9):
+            def receive_and_process(conn, player_id):
+                msg = conn.recv(1024)
+                msg_dict = json.loads(msg.decode("utf8"))
+                card = {"jogador": msg_dict['id_player'], "carta": msg_dict['id_carta']}
+                self.cartas_escolhidas.append(card)
+                
+
+                barrier.wait()
+
+
+            thread1 = threading.Thread(target=receive_and_process, args=(conn1, 1))
+            thread2 = threading.Thread(target=receive_and_process, args=(conn2, 2))
+            thread3 = threading.Thread(target=receive_and_process, args=(conn3, 3))
             
-            card1 = {"jogador": msg1_dict['id_player'], "carta": msg1_dict['id_carta']}
-            self.cartas_escolhidas.append(card1)
-            card2 = {"jogador": msg2_dict['id_player'], "carta": msg2_dict['id_carta']}
-            self.cartas_escolhidas.append(card2)
-            card3 = {"jogador": msg3_dict['id_player'], "carta": msg3_dict['id_carta']}
-            self.cartas_escolhidas.append(card3)
+            thread1.start()
+            thread2.start()
+            thread3.start()
             
+            thread1.join()
+            thread2.join()
+            thread3.join()
+
             personagem1 = self.get_character_by_index(int(self.cartas_escolhidas[0]['carta']))
             personagem2 = self.get_character_by_index(int(self.cartas_escolhidas[1]['carta']))
             personagem3 = self.get_character_by_index(int(self.cartas_escolhidas[2]['carta']))
-      
-            
-            personagem_won = self.who_won(personagem1, personagem2, personagem3, self.atributo_rodada)
 
+            personagem_won = self.who_won(personagem1, personagem2, personagem3, self.atributo_rodada)
             
-            #atualizar cemiterio
-            if personagem_won  == "personagem1":
-                self.cemiterio1.append(card2["carta"])
-                self.cemiterio1.append(card3["carta"])
-            if personagem_won  == "personagem2":
-                self.cemiterio2.append(card1["carta"])
-                self.cemiterio2.append(card3["carta"])
-            if personagem_won  == "personagem3":
-                self.cemiterio3.append(card2["carta"])
-                self.cemiterio3.append(card3["carta"])
+            if personagem_won == "1":
+                self.cemiterio1.append(int(self.cartas_escolhidas[1]["carta"]))
+                self.cemiterio1.append(int(self.cartas_escolhidas[2]["carta"]))
+            elif personagem_won == "2":
+                self.cemiterio2.append(int(self.cartas_escolhidas[0]["carta"]))
+                self.cemiterio2.append(int(self.cartas_escolhidas[2]["carta"]))
+            elif personagem_won == "3":
+                self.cemiterio3.append(int(self.cartas_escolhidas[0]["carta"]))
+                self.cemiterio3.append(int(self.cartas_escolhidas[1]["carta"]))
             
             atributos = ["Velocidade", "Aceleração", "Peso", "Capacidade", "Resistência", "Truque"]
             atributos_ingles = ["speed", "accel", "weight", "capacity", "resistance", "gimmick"]
@@ -146,7 +157,12 @@ class ControllerPartida():
             self.atributo_rodada = atributos_ingles[index_random]
 
 
-            if contador_deck < 9:
+            if x == 8:
+                conn1.sendall(f"{personagem_won}".encode("utf8"))
+                conn2.sendall(f"{personagem_won}".encode("utf8"))
+                conn3.sendall(f"{personagem_won}".encode("utf8"))
+
+            elif contador_deck < 9:
                 conn1.sendall(f"{personagem_won} - {self.deck1[contador_deck]} - {atributos[index_random]}".encode("utf8"))
                 conn2.sendall(f"{personagem_won} - {self.deck2[contador_deck]} - {atributos[index_random]}".encode("utf8"))
                 conn3.sendall(f"{personagem_won} - {self.deck3[contador_deck]} - {atributos[index_random]}".encode("utf8"))
@@ -160,67 +176,73 @@ class ControllerPartida():
             self.cartas_escolhidas = []
 
         id_jogador_vencedor = self.verificar_vencedor(self.cemiterio1, self.cemiterio2, self.cemiterio3)
-        
-        
-        
+        time.sleep(5)
+
         conn1.sendall(f"{id_jogador_vencedor}".encode("utf8"))
         conn2.sendall(f"{id_jogador_vencedor}".encode("utf8"))
         conn3.sendall(f"{id_jogador_vencedor}".encode("utf8"))
 
+        time.sleep(5)
+
+       
+
         #inserir carta recebida no banco (n funciona)
-        # if id_jogador_vencedor == 1:
-        #     username = conn1.recv(1024)
-        #     msg_dict = json.loads(username.decode("utf8"))
-            
-        #     index_random = random.randint(0, len(self.cemiterio1))
-        #     carta_recebida = self.cemiterio1[index_random]
+        if id_jogador_vencedor == 1:
+            username = conn1.recv(1024)
+            msg_dict = json.loads(username.decode("utf8"))
+            print("msg recebida ", msg_dict, flush = True)
+            index_random = random.randint(0, len(self.cemiterio1)-1)
+            carta_recebida = self.cemiterio1[index_random]
         
-        #     bd_conn = sqlite3.connect('corrida_maluca.db')
-        #     c = bd_conn.cursor()
-        #     c.execute("""
-        #         INSERT INTO cards (username, filename) 
-        #         VALUES (?, ?)
-        #         """, (msg_dict['username'], carta_recebida))
+            bd_conn = sqlite3.connect('corrida_maluca.db')
+            c = bd_conn.cursor()
+            c.execute("""
+                INSERT INTO cards (username, filename) 
+                VALUES (?, ?)
+                """, (msg_dict['username'], carta_recebida))
 
-        #     bd_conn.commit()
-        #     bd_conn.close()
-        #     conn1.sendall(f"{carta_recebida}".encode("utf8"))
+            bd_conn.commit()
+            bd_conn.close()
+            conn1.sendall(f"{carta_recebida}".encode("utf8"))
 
-        # elif id_jogador_vencedor == 2:
-        #     username = conn2.recv(1024)
-        #     msg_dict = json.loads(username.decode("utf8"))
-            
-        #     index_random = random.randint(0, len(self.cemiterio2))
-        #     carta_recebida = self.cemiterio2[index_random]
 
-        #     bd_conn = sqlite3.connect('corrida_maluca.db')
-        #     c = bd_conn.cursor()
-        #     c.execute("""
-        #         INSERT INTO cards (username, filename) 
-        #         VALUES (?, ?)
-        #         """, (msg_dict['username'], carta_recebida))
+        elif id_jogador_vencedor == 2:
+            username = conn2.recv(1024)
+            msg_dict = json.loads(username.decode("utf8"))
+            print("msg recebida ", msg_dict, flush = True)
+            index_random = random.randint(0, len(self.cemiterio2)-1)
+            carta_recebida = self.cemiterio2[index_random]
 
-        #     bd_conn.commit()
-        #     bd_conn.close()
-        #     conn2.sendall(f"{carta_recebida}".encode("utf8"))
+            bd_conn = sqlite3.connect('corrida_maluca.db')
+            c = bd_conn.cursor()
+            c.execute("""
+                INSERT INTO cards (username, filename) 
+                VALUES (?, ?)
+                """, (msg_dict['username'], carta_recebida))
 
-        # elif id_jogador_vencedor == 3:
-        #     username = conn3.recv(1024)
-        #     msg_dict = json.loads(username.decode("utf8"))
-            
-        #     index_random = random.randint(0, len(self.cemiterio3))
-        #     carta_recebida = self.cemiterio3[index_random]
+            bd_conn.commit()
+            bd_conn.close()
+            conn2.sendall(f"{carta_recebida}".encode("utf8"))
 
-        #     bd_conn = sqlite3.connect('corrida_maluca.db')
-        #     c = bd_conn.cursor()
-        #     c.execute("""
-        #         INSERT INTO cards (username, filename) 
-        #         VALUES (?, ?)
-        #         """, (msg_dict['username'], carta_recebida))
 
-        #     bd_conn.commit()
-        #     bd_conn.close()
-        #     conn3.sendall(f"{carta_recebida}".encode("utf8"))
+        elif id_jogador_vencedor == 3:
+            username = conn3.recv(1024)
+            msg_dict = json.loads(username.decode("utf8"))
+            print("msg recebida ", msg_dict, flush = True)
+            index_random = random.randint(0, len(self.cemiterio3)-1)
+            carta_recebida = self.cemiterio3[index_random]
+
+            bd_conn = sqlite3.connect('corrida_maluca.db')
+            c = bd_conn.cursor()
+            c.execute("""
+                INSERT INTO cards (username, filename) 
+                VALUES (?, ?)
+                """, (msg_dict['username'], carta_recebida))
+
+            bd_conn.commit()
+            bd_conn.close()
+            conn3.sendall(f"{carta_recebida}".encode("utf8"))
+
         
 
             

@@ -5,7 +5,8 @@ services:
     volumes:
       - ./server:/usr/local/ccf355/server
     working_dir: /usr/local/ccf355/server
-    network_mode: host
+    ports: 
+      - 4242:4242
 
   client-alice:
     container_name: client-alice
