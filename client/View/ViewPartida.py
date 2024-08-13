@@ -2,6 +2,7 @@ import arcade
 import arcade.color
 import arcade.csscolor
 import logging
+import threading
 import time
 import arcade.gui
 from arcade.gui import UILabel
@@ -22,6 +23,7 @@ class ViewPartida(arcade.View):
 
     def __init__(self, window, client):
         super().__init__()
+        self.fundo = arcade.Sprite(filename="resources/fundo.png", center_x=650, center_y=350, scale=1.1)
         self.window = window
         self.controller_partida = ControllerPartida(client)
         self.cont_rodadas = 0
@@ -64,9 +66,10 @@ class ViewPartida(arcade.View):
     
     def desenha(self):
         self.clear()
+        self.fundo.draw()
         self.manager.draw()
         self.cartas_sprites.draw()
-
+    
     def on_draw(self):
         self.desenha()
         #Mesa
@@ -99,7 +102,7 @@ class ViewPartida(arcade.View):
                 self.used_card_x = self.dragging_card.init_x
                 id = self.dragging_card.id      
                 self.cont_rodadas += 1
-                    
+
                 msg = self.controller_partida.send_chosen_card( id, self.window.id_player)
 
                 if self.cont_rodadas < 7:
@@ -120,10 +123,10 @@ class ViewPartida(arcade.View):
                     self.update_atributo(f"Esperando game finish!")
                     id = self.controller_partida.listen_game_finish()
                     if int(id) == int(self.window.id_player):
-                        print("Venci!!!!") 
+                        #To do: ALTERAR DE UPDATE ATRIBUTO PARA ALGUM OUTRO LUGAR
                         self.update_atributo(f"Voce venceu!")
                     else:
-                        print(f"O jogador {id} venceu!!!!") 
+                        
                         self.update_atributo(f"Jogador vencedor: {id}")
                     
                     #time.sleep(10)
@@ -134,6 +137,9 @@ class ViewPartida(arcade.View):
                 self.dragging_card.center_y = self.dragging_card.init_y
 
             self.dragging_card = None
+
+
+    
 
     def exibe_msg_aviso(self, msg):
         self.avisos.text = msg

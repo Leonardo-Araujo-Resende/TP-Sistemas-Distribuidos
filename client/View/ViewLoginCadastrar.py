@@ -9,6 +9,9 @@ class ViewLoginCadastrar(arcade.View):
 
     def __init__(self, window, controller_log_cad: ControllerLoginCadastrar):
         super().__init__()
+
+        self.fundo = arcade.Sprite(filename="resources/fundo.png", center_x=650, center_y=350, scale=1.1)
+
         self.width = 1300
         self.height = 700
 
@@ -31,32 +34,22 @@ class ViewLoginCadastrar(arcade.View):
         self.manager.add(
             UILabel( text="Usuário*", x=self.width/2 - 270/2, y=430, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
         )
-        self.input_usuario = UIInputText(text="2", x=self.width/2 - 270/2, y=380, width=320, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+        self.input_usuario = UIInputText(text="", x=self.width/2 - 270/2, y=380, width=320, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
         self.manager.add(self.input_usuario)
 
         #Senha
         self.manager.add(
             UILabel(text="Senha*", x=self.width/2 - 270/2, y=330, width=270, height=30, font_name="Roboto", font_size=16,text_color=self.corClara)
         )
-        self.input_senha = UIInputText(text="2",x=self.width/2 - 270/2, y=280, width=270, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
+        self.input_senha = UIInputText(text="",x=self.width/2 - 270/2, y=280, width=270, height=30, font_name="Roboto", font_size=15, text_color=self.corClara)
         self.manager.add(self.input_senha)
         
 
-        botao_style = {
-            "font_name": "Roboto",
-            "font_size": 15,
-            "font_color": self.corClara,
-            "border_width": 2,
-            "border_color": self.corClara,
-            "bg_color": self.corEscura,
 
-            "bg_color_pressed": arcade.color.BLACK,
-            "border_color_pressed": self.corEscura,  
-            "font_color_pressed": self.corClara,
-        }
+
         
         #Botao logar
-        botao_logar = arcade.gui.UIFlatButton(x=500,y=170,text="Logar",height=60,width=300,style=botao_style)
+        botao_logar = arcade.gui.UIFlatButton(x=500,y=170,text="Logar",height=60,width=300,style=self.window.botao_style)
         self.manager.add(botao_logar)
         
         @botao_logar.event
@@ -71,7 +64,7 @@ class ViewLoginCadastrar(arcade.View):
 
 
         #Botao cadastrar
-        botao_cadastrar = arcade.gui.UIFlatButton(x=500,y=100,text="Cadastrar",height=60,width=300,style=botao_style)
+        botao_cadastrar = arcade.gui.UIFlatButton(x=500,y=100,text="Cadastrar",height=60,width=300,style=self.window.botao_style)
         self.manager.add(botao_cadastrar)
 
         @botao_cadastrar.event
@@ -92,6 +85,7 @@ class ViewLoginCadastrar(arcade.View):
 
     def on_draw(self):
         self.clear()
+        self.fundo.draw()
         self.manager.draw()
 
         #Retangulo Usuario

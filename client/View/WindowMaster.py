@@ -16,9 +16,21 @@ class WindowMaster(arcade.Window):
         self.cliente = Client()
         self.id_player = 0
 
+        self.cor_escura = arcade.color_from_hex_string("#08D8FF")
+        self.cor_clara = arcade.color_from_hex_string("#220B60")    
 
-        self.corEscura = arcade.color_from_hex_string("#08D8FF")
-        self.corClara = arcade.color_from_hex_string("#220B60")    
+        self.botao_style = {
+            "font_name": "Roboto",
+            "font_size": 15,
+            "font_color": self.cor_clara,
+            "border_width": 2,
+            "border_color": self.cor_clara,
+            "bg_color": (0, 0, 0, 0),
+
+            "bg_color_pressed": (0, 0, 0, 0),
+            "border_color_pressed": self.cor_escura,  
+            "font_color_pressed": self.cor_escura,
+        }
     
     def switch_view(self, new_view):
         self.current_view.clear()
@@ -30,7 +42,7 @@ class WindowMaster(arcade.Window):
         self.center_window()
 
     def switch_view_to_Baralho(self):
-        self.switch_view(ViewBaralhos(ControllerJogar(self.cliente), ControllerBaralhos(self.collection, [Deck([]), Deck([])]), self,self.collection))
+        self.switch_view( ViewBaralhos( ControllerJogar(self.cliente), ControllerBaralhos( self.collection, [Deck([]), Deck([])] ), self, self.collection) )
     
     def switch_view_to_Partida(self):
         self.switch_view( ViewPartida(self, self.cliente) )
