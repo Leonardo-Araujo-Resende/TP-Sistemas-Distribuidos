@@ -35,7 +35,7 @@ class BaralhoCompleto():
         cont = 0            
         for i in range(3):
             for j in range(10):
-                add_card = CartaSprite(f"resources/{self.collection.get_cards()[i*10+j].get_id()}.png", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.17, int(self.collection.get_cards()[i*10+j].get_id()))
+                add_card = CartaSprite(f"resources/{self.collection.get_cards()[i*10+j].get_id()}.jpg", self.x + j * self.distance_x_between_cards, self.y - i * self.distance_y_between_cards, 0.17, int(self.collection.get_cards()[i*10+j].get_id()))
                 self.cards_list.append(add_card)
                 self.cards_list.draw()
                 cont += 1
@@ -114,7 +114,7 @@ class ViewBaralhos(arcade.View):
 
     def __init__(self, controller_jogar: ControllerJogar, controller_view:ControllerBaralhos, window, collection):
         super().__init__()
-        self.fundo = arcade.Sprite(filename="resources/fundo.png", center_x=650, center_y=350, scale=1.1)
+        self.fundo = arcade.Sprite(filename="resources/fundo.jpg", center_x=650, center_y=350, scale=1.1)
         self.collection = collection
 
         self.window = window
@@ -141,7 +141,7 @@ class ViewBaralhos(arcade.View):
         #Preencher baralhos para acelerar testes
         for i in range(9):
             card = self.collection.get_cards()[i]
-            self.deck_list[0].append_card( CartaSprite(f"resources/{card.id}.png", 50, 50, 0.15, card.id))
+            self.deck_list[0].append_card( CartaSprite(f"resources/{card.id}.jpg", 50, 50, 0.15, card.id))
 
         #Carta destacada e quantidade
         self.spotted_card:CartaSprite = arcade.SpriteList()

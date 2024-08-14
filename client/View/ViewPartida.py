@@ -23,7 +23,7 @@ class ViewPartida(arcade.View):
 
     def __init__(self, window, client):
         super().__init__()
-        self.fundo = arcade.Sprite(filename="resources/fundo.png", center_x=650, center_y=350, scale=1.1)
+        self.fundo = arcade.Sprite(filename="resources/fundo.jpg", center_x=650, center_y=350, scale=1.1)
         self.window = window
         self.controller_partida = ControllerPartida(client)
         self.cont_rodadas = 0
@@ -70,7 +70,7 @@ class ViewPartida(arcade.View):
         x = 400
         y = 150
         for i in range(3):
-            self.cartas_sprites.append(CartaSprite(f"resources/{mao_inicial[i]}.png", x, y, 0.35, mao_inicial[i]))
+            self.cartas_sprites.append(CartaSprite(f"resources/{mao_inicial[i]}.jpg", x, y, 0.35, mao_inicial[i]))
             x += 250
 
     def update_score(self, id_player):
@@ -90,7 +90,7 @@ class ViewPartida(arcade.View):
         self.atributo.text = f"Jogador vencedor {msg}"
 
     def recieved_card(self, id):
-        self.cartas_sprites.append(CartaSprite(f"resources/{id}.png", self.used_card_x, 150, 0.35, id))
+        self.cartas_sprites.append(CartaSprite(f"resources/{id}.jpg", self.used_card_x, 150, 0.35, id))
     
     def desenha(self):
         self.clear()

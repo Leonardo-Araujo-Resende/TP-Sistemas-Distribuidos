@@ -10,7 +10,7 @@ class ViewLoginCadastrar(arcade.View):
     def __init__(self, window, controller_log_cad: ControllerLoginCadastrar):
         super().__init__()
 
-        self.fundo = arcade.Sprite(filename="resources/fundo.png", center_x=650, center_y=350, scale=1.1)
+        self.fundo = arcade.Sprite(filename="resources/fundo.jpg", center_x=650, center_y=350, scale=1.1)
 
         self.width = 1300
         self.height = 700

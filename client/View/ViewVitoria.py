@@ -11,8 +11,8 @@ class ViewVitoria(arcade.View):
     def __init__(self, window, id_carta):
         super().__init__()
 
-        self.carta = arcade.Sprite(filename=f"resources/{id_carta}.png", center_x=700, center_y=375, scale = 0.7)
-        self.fundo = arcade.Sprite(filename="resources/fundo.png", center_x=650, center_y=350, scale=1.1)
+        self.carta = arcade.Sprite(filename=f"resources/{id_carta}.jpg", center_x=700, center_y=375, scale = 0.7)
+        self.fundo = arcade.Sprite(filename="resources/fundo.jpg", center_x=650, center_y=350, scale=1.1)
 
 
 

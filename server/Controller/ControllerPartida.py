@@ -190,7 +190,6 @@ class ControllerPartida():
         if id_jogador_vencedor == 1:
             username = conn1.recv(1024)
             msg_dict = json.loads(username.decode("utf8"))
-            print("msg recebida ", msg_dict, flush = True)
             index_random = random.randint(0, len(self.cemiterio1)-1)
             carta_recebida = self.cemiterio1[index_random]
         
@@ -209,7 +208,6 @@ class ControllerPartida():
         elif id_jogador_vencedor == 2:
             username = conn2.recv(1024)
             msg_dict = json.loads(username.decode("utf8"))
-            print("msg recebida ", msg_dict, flush = True)
             index_random = random.randint(0, len(self.cemiterio2)-1)
             carta_recebida = self.cemiterio2[index_random]
 
@@ -228,7 +226,6 @@ class ControllerPartida():
         elif id_jogador_vencedor == 3:
             username = conn3.recv(1024)
             msg_dict = json.loads(username.decode("utf8"))
-            print("msg recebida ", msg_dict, flush = True)
             index_random = random.randint(0, len(self.cemiterio3)-1)
             carta_recebida = self.cemiterio3[index_random]
 
