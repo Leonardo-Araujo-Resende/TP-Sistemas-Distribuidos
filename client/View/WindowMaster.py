@@ -4,6 +4,7 @@ import arcade.csscolor
 import arcade.gui
 from controller.ControllerJogar import *
 from View.ViewBaralhos import ViewBaralhos
+from View.ViewVitoria import *
 from controller.ControllerBaralhos import *
 from model.Collection import *
 from View.ViewPartida import *
@@ -11,7 +12,7 @@ from View.ViewPartida import *
 class WindowMaster(arcade.Window):
 
     def __init__(self):
-        super().__init__(1400, 750, "Janela Principal", center_window=True, resizable=True)
+        super().__init__(1400, 750, "Corrida Maluca", center_window=True, resizable=True)
         self.collection:Collection = Collection([])
         self.cliente = Client()
         self.id_player = 0
@@ -37,6 +38,9 @@ class WindowMaster(arcade.Window):
         self.current_view.clear()
         self.show_view(new_view)
         new_view.on_show()
+    
+    def switch_view_to_win(self, id_carta):
+        self.switch_view(ViewVitoria(self, id_carta))
     
     def set_window_size(self, width, height):
         self.set_size(width, height)

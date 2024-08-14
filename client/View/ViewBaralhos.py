@@ -149,6 +149,9 @@ class ViewBaralhos(arcade.View):
         self.text_quantity = UILabel(text="Quantidade nao usada: ", x=1125, y=300, width=300, height=40, font_name="Roboto", font_size=15,text_color=arcade.color_from_hex_string("#220B60") )
         self.ui_manager.add( self.text_quantity)
 
+        self.texto_tutorial = UILabel(text="Arraste as cartas para montar um baralho", x=30, y= 235, width=450, height=40, font_name="Roboto", font_size=14,text_color=arcade.color_from_hex_string("#220B60") )
+        self.ui_manager.add( self.texto_tutorial)
+
         #Botoes deck01
         button_save_deck_01 = arcade.gui.UIFlatButton(x=855,y=220-50+2,text="Salvar1",height=50,width=100,style=self.window.botao_style)
         self.ui_manager.add(button_save_deck_01)
@@ -238,7 +241,7 @@ class ViewBaralhos(arcade.View):
 
     def alert_deck_02(self, msg):
         self.button_play_with_deck_02.text = msg
-        arcade.schedule( self.stop_alert , 3)
+        arcade.schedule( self.stop_alert_deck_02 , 3)
     
     def stop_alert_deck_02(self, delta_time):
         self.button_play_with_deck_02.text = "Jogar02"

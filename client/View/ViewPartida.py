@@ -33,6 +33,8 @@ class ViewPartida(arcade.View):
 
         self.dragging_card = None
         self.used_card_x = None
+
+        self.can_darg_card = True
         
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
         msg = self.controller_partida.listen_game_finish()
@@ -53,11 +55,13 @@ class ViewPartida(arcade.View):
 
         self.pontuacao = [0,0,0]
         
-        self.pontuacao_jogador_1 = UILabel(text= "Jogador 1:", x=20, y=200, width=250, height=60, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.titulo_pontuacao = UILabel(text= "Pontuação dos Jogadores", x=20, y=200, width=250, height=60, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.manager.add( self.titulo_pontuacao )
+        self.pontuacao_jogador_1 = UILabel(text= "Jogador 1: ", x=20, y=150, width=250, height=60, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
         self.manager.add( self.pontuacao_jogador_1 )
-        self.pontuacao_jogador_2 = UILabel(text= "Jogador 2:", x=20, y=150, width=250, height=60, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.pontuacao_jogador_2 = UILabel(text= "Jogador 2: ", x=20, y=100, width=250, height=60, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
         self.manager.add( self.pontuacao_jogador_2 )
-        self.pontuacao_jogador_3 = UILabel(text= "Jogador 3:", x=20, y=100, width=250, height=60, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.pontuacao_jogador_3 = UILabel(text= "Jogador 3: ", x=20, y=50, width=250, height=60, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
         self.manager.add( self.pontuacao_jogador_3 )
 
         self.msg = None
@@ -73,14 +77,17 @@ class ViewPartida(arcade.View):
         id_player = int(id_player) -1
         self.pontuacao[id_player] +=1 
         if id_player == 0:
-            self.pontuacao_jogador_1.text = f"Jogador 1: {self.pontuacao[id_player]}"
+            self.pontuacao_jogador_1.text += "🏆"
         elif id_player == 1:
-            self.pontuacao_jogador_2.text = f"Jogador 2: {self.pontuacao[id_player]}"
+            self.pontuacao_jogador_2.text += "🏆"
         elif id_player == 2:
-            self.pontuacao_jogador_3.text = f"Jogador 3: {self.pontuacao[id_player]}"
+            self.pontuacao_jogador_3.text += "🏆"
 
     def update_atributo(self, msg):
         self.atributo.text = f"Atributo selecionado: {msg}"
+    
+    def jogador_vencedor(self,msg):
+        self.atributo.text = f"Jogador vencedor {msg}"
 
     def recieved_card(self, id):
         self.cartas_sprites.append(CartaSprite(f"resources/{id}.png", self.used_card_x, 150, 0.35, id))
@@ -110,17 +117,18 @@ class ViewPartida(arcade.View):
 
     def on_mouse_press(self, x, y, button, modifiers):
         for card in self.cartas_sprites:
-            if card.collides_with_point((x, y)):
+            if card.collides_with_point((x, y)) and self.can_darg_card == True:
                 self.dragging_card = card
 
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
-        if self.dragging_card:
+        if self.dragging_card and self.can_darg_card == True:
             self.dragging_card.center_x = x
             self.dragging_card.center_y = y
 
     def on_mouse_release(self, x, y, button, modifiers):
-        if self.dragging_card:
+        if self.dragging_card and self.can_darg_card == True:
             if y > 300:
+                self.can_darg_card = False
                 self.dragging_card.center_x = 700
                 self.dragging_card.center_y = 500
                 self.used_card_x = self.dragging_card.init_x
@@ -131,12 +139,6 @@ class ViewPartida(arcade.View):
             else:
                 self.dragging_card.center_x = self.dragging_card.init_x
                 self.dragging_card.center_y = self.dragging_card.init_y
-
-
-    def win_tela(self):
-        self.titulo_venceu = UILabel(text= "Vitória", x=700 + 300/2, y= 380, width=300, height=100, align="center", font_name="Roboto", font_size=50,text_color=arcade.color.BLACK)
-        self.manager.add( self.titulo_venceu )
-    
 
     def exibe_msg_aviso(self, msg):
         self.avisos.text = msg
@@ -158,15 +160,13 @@ class ViewPartida(arcade.View):
             self.update_score(vencedor)
             self.cartas_sprites.remove(self.dragging_card)
 
-            self.update_atributo(f"Esperando game finish!")
             id_vencedor = self.controller_partida.listen_game_finish()
+
             if int(id_vencedor) == int(self.window.id_player):
-                self.win_tela()
                 carta_premiun = self.controller_partida.send_username(self.window.username)
-                print("carta recebida no cliente", carta_premiun, flush = True)
-                
+                self.window.switch_view_to_win(carta_premiun)
             else:
-                self.update_atributo(f"Jogador vencedor: {id_vencedor}")
+                self.jogador_vencedor(f"{id_vencedor}")
 
         else:
             vencedor, atributo = self.msg.split(" - ")
@@ -177,3 +177,4 @@ class ViewPartida(arcade.View):
 
         self.msg = None
         self.dragging_card = None
+        self.can_darg_card = True

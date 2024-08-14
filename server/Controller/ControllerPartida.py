@@ -176,13 +176,13 @@ class ControllerPartida():
             self.cartas_escolhidas = []
 
         id_jogador_vencedor = self.verificar_vencedor(self.cemiterio1, self.cemiterio2, self.cemiterio3)
-        time.sleep(5)
+        time.sleep(3)
 
         conn1.sendall(f"{id_jogador_vencedor}".encode("utf8"))
         conn2.sendall(f"{id_jogador_vencedor}".encode("utf8"))
         conn3.sendall(f"{id_jogador_vencedor}".encode("utf8"))
 
-        time.sleep(5)
+        time.sleep(3)
 
        
 
