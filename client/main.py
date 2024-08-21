@@ -2,9 +2,10 @@ import arcade
 from View.ViewLoginCadastrar import *
 from controller.ControllerLoginCadastrar import *
 from View.WindowMaster import WindowMaster
+import time
 
 def main(): 
-
+    time.sleep(2)
     window = WindowMaster()
     window.show_view(ViewLoginCadastrar(window, ControllerLoginCadastrar()))
     arcade.run()

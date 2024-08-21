@@ -31,14 +31,17 @@ def main():
     # server.listen()
 
 
-    # time.sleep(2)
 
-    daemon = Pyro5.api.Daemon()
-    uri = daemon.register(ControllerLoginCadastrar  )
-    ns = Pyro5.api.locate_ns()
-    ns.register("greeting.log_cad", uri)
+    daemon = Pyro5.api.Daemon(host="0.0.0.0", port=9090)
+    uri = daemon.register(ControllerLoginCadastrar, objectId="controler-log-cad")
+    print("Registrou no daemon: ", uri, flush= True)
+    # ns = Pyro5.api.locate_ns()
+    # print("Criou o ns", flush= True)
+    # ns.register("server.log_cad", uri)
+    # registrations = ns.list()
 
-    print("Ready. Object uri =", uri, flush = True)
+    # for name, uri in registrations.items():
+    #     print(f"{name}: {uri}",flush = True)
     daemon.requestLoop()
         
 if __name__ == "__main__":

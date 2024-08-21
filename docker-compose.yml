@@ -3,8 +3,9 @@ services:
   rmi-ns:
     container_name: ns
     build: ./server
-    command: pyro5-ns -n 0.0.0.0  # Faz o Name Server escutar em todas as interfaces de rede
-    
+    command: pyro5-ns -n 0.0.0.0 -p 9090
+    ports:
+      - 9090:9090
 
   server:
     container_name: server
