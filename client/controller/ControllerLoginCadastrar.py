@@ -1,6 +1,7 @@
 from sys import argv
 from network.Client import *
 import json
+import Pyro5.api
 
 class ControllerLoginCadastrar():
     
@@ -9,22 +10,16 @@ class ControllerLoginCadastrar():
 
 
     def sign_in(self, username: str, password: str):
-        msg = { "op": "login",
-                "username": username,
-                "password": password}
-        
-        response = self.client.send_msg(msg)
-        try:
-            # Tenta carregar a mensagem como JSON
-            dados = json.loads(response)
-            return dados['colecao']
-            
-            
-        except json.JSONDecodeError:
-            # Se falhar, significa que a mensagem não é um JSON 
-            return 1
 
+        controller_server = Pyro5.api.Proxy("PYRONAME:server.log_cad")
         
+        
+        resultado = controller_server.sign_in_bd(username, password)
+        if resultado == 0:
+            print(controller_server, flush=True)
+            return controller_server.return_colection(username) 
+        else:
+            return 1
     
     def sign_up(self, username: str, password: str):
         msg = { "op": "cadastro",

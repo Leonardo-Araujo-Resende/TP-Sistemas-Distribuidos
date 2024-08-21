@@ -12,7 +12,9 @@ RUN apt-get install -y -qq --no-install-recommends \
     libfontconfig1 \
     libfontconfig1-dev \
     python3-pip \
-    python-is-python3
+    python-is-python3 \
+    sqlite3 \
+    libsqlite3-dev
 
 COPY requirements.txt ./
 

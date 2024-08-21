@@ -1,8 +1,9 @@
 import sqlite3
 import random
+import Pyro5.api
 
-
-class ControllerLoginCadastrar():
+@Pyro5.api.expose
+class ControllerLoginCadastrar(object):
     def __init__(self):
         self.username = ""
            

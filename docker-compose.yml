@@ -1,16 +1,23 @@
 services:
+
+  rmi-ns:
+    container_name: ns
+    build: ./server
+    command: pyro5-ns -n 0.0.0.0  # Faz o Name Server escutar em todas as interfaces de rede
+    
+
   server:
     container_name: server
-    build: server
+    build: ./server
     volumes:
       - ./server:/usr/local/ccf355/server
     working_dir: /usr/local/ccf355/server
-    ports: 
-      - 4242:4242
+    depends_on:
+      - rmi-ns  # Garante que o Name Server esteja rodando antes de iniciar o servidor
 
   client-alice:
     container_name: client-alice
-    build: client
+    build: ./client
     environment:
       - DISPLAY=$DISPLAY
       - CLIENT_NAME=Alice
@@ -18,11 +25,13 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ./client:/home/jhonata/Documents/TP-Distribuidos/client
     working_dir: /home/jhonata/Documents/TP-Distribuidos/client
+    depends_on:
+      - server  # Garante que o servidor esteja rodando antes de iniciar o cliente
     network_mode: host
 
   client-bob:
     container_name: client-bob
-    build: client
+    build: ./client
     environment:
       - DISPLAY=$DISPLAY
       - CLIENT_NAME=Bob
@@ -30,11 +39,13 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ./client:/home/jhonata/Documents/TP-Distribuidos/client
     working_dir: /home/jhonata/Documents/TP-Distribuidos/client
+    depends_on:
+      - server  # Garante que o servidor esteja rodando antes de iniciar o cliente
     network_mode: host
-  
+
   client-carlos:
     container_name: client-carlos
-    build: client
+    build: ./client
     environment:
       - DISPLAY=$DISPLAY
       - CLIENT_NAME=Carlos
@@ -42,4 +53,6 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - ./client:/home/jhonata/Documents/TP-Distribuidos/client
     working_dir: /home/jhonata/Documents/TP-Distribuidos/client
+    depends_on:
+      - server  # Garante que o servidor esteja rodando antes de iniciar o cliente
     network_mode: host

@@ -1,9 +1,10 @@
 from sys import argv
-from network.server import Server
 import sqlite3
+import time
+from Controller.ControllerLoginCadastrar import *
+import Pyro5.api
 
 def main():
-
     bd_conn = sqlite3.connect('corrida_maluca.db')
     c = bd_conn.cursor()
 
@@ -22,11 +23,23 @@ def main():
             "resistance": card[6]
         }
 
+
     bd_conn.commit()
     bd_conn.close()    
 
-    server = Server(cards_dict)
-    server.listen()
+    # server = Server(cards_dict)
+    # server.listen()
+
+
+    # time.sleep(2)
+
+    daemon = Pyro5.api.Daemon()
+    uri = daemon.register(ControllerLoginCadastrar  )
+    ns = Pyro5.api.locate_ns()
+    ns.register("greeting.log_cad", uri)
+
+    print("Ready. Object uri =", uri, flush = True)
+    daemon.requestLoop()
         
 if __name__ == "__main__":
     main(*argv[1:])
