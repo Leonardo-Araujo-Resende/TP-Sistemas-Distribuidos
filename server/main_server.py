@@ -2,6 +2,8 @@ from sys import argv
 import sqlite3
 import time
 from Controller.ControllerLoginCadastrar import *
+from Controller.ControllerJogar import *
+from Controller.ControllerPartida import *
 import Pyro5.api
 
 def main():
@@ -34,14 +36,20 @@ def main():
 
     daemon = Pyro5.api.Daemon()
     uri = daemon.register(ControllerLoginCadastrar, objectId="controler-log-cad")
-    print("Registrou no daemon: ", uri, flush= True)
-    ns = Pyro5.api.locate_ns()
-    print("Criou o ns", flush= True)
-    ns.register("server.log_cad", uri)
-    registrations = ns.list()
 
-    for name, uri in registrations.items():
-        print(f"{name}: {uri}",flush = True)
+    ns = Pyro5.api.locate_ns()
+    ns.register("server.log_cad", uri)
+
+    uri = daemon.register(ControllerJogar(), objectId="controler-jogar")
+
+    ns = Pyro5.api.locate_ns()
+    ns.register("server.jogar", uri)
+
+    uri = daemon.register(ControllerPartida(cards_dict), objectId="controler-partida")
+
+    ns = Pyro5.api.locate_ns()
+    ns.register("server.partida", uri)
+
     daemon.requestLoop()
         
 if __name__ == "__main__":

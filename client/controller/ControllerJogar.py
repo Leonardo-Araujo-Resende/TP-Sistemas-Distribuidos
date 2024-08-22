@@ -1,19 +1,37 @@
 from network.Client import *
-
+import random
+import Pyro5.api
 
 class ControllerJogar():
 
     def __init__(self, cliente):
+        self.controller_jogar = None
+        self.controller_partida = None
         self.client = cliente
    
     def define_deck(self, deck, index_deck):
-       
-        msg = {"op": "define_deck", "deck_index": index_deck, "deck": []}
-        for card in deck:
-            # add id da card na msg
-            msg['deck'].append(card.id)
+        controller_jogar = Pyro5.api.Proxy("PYRONAME:server.jogar")
+        self.controller_jogar = controller_jogar
+        self.controller_jogar.set_user_ready()
         
-        return self.client.send_msg(msg)
+        
+        controller_partida = Pyro5.api.Proxy("PYRONAME:server.partida")
+        self.controller_partida = controller_partida
 
+        deck = [card.id for card in deck]
+        
+        if self.controller_jogar.get_qt_users_ready() == 3:
+            self.controller_partida.set_deck(random.sample(deck, len(deck)),3)
+            self.controller_jogar.set_game_ready()
+        elif self.controller_jogar.get_qt_users_ready() == 2:
+            self.controller_partida.set_deck(random.sample(deck, len(deck)),2)
+        else:
+            self.controller_partida.set_deck(random.sample(deck, len(deck)),1)
+        
+        return self.controller_jogar.get_qt_users_ready() 
+
+        
     def listen_game_start(self):
-        return self.client.listen_for_server_msg()    
+        while True:
+            if self.controller_jogar.get_game_is_ready():
+                return "Game Ready"  
