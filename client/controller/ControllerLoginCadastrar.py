@@ -16,20 +16,20 @@ class ControllerLoginCadastrar():
         
         resultado = controller_server.sign_in_bd(username, password)
         if resultado == 0:
-            print(controller_server, flush=True)
             return controller_server.return_colection(username) 
         else:
             return 1
     
     def sign_up(self, username: str, password: str):
-        msg = { "op": "cadastro",
-                "username": username,
-                "password": password}
+        controller_server = Pyro5.api.Proxy("PYRONAME:server.log_cad")
         
-        if self.client.send_msg(msg) == "Success":
-            return 0
+        
+        resultado = controller_server.sign_up_bd(username, password)
+        if resultado == 0:
+            return 0 
         else:
             return 1
+        
 
         
         
