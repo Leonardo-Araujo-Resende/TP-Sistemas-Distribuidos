@@ -3,18 +3,20 @@ services:
   rmi-ns:
     container_name: ns
     build: ./server
-    command: pyro5-ns -n 0.0.0.0 -p 9090
+    command: pyro5-ns
+    network_mode: host
     ports:
       - 9090:9090
-
+    
   server:
     container_name: server
     build: ./server
     volumes:
       - ./server:/usr/local/ccf355/server
     working_dir: /usr/local/ccf355/server
+    network_mode: host
     depends_on:
-      - rmi-ns  # Garante que o Name Server esteja rodando antes de iniciar o servidor
+      - rmi-ns  
 
   client-alice:
     container_name: client-alice
@@ -27,7 +29,7 @@ services:
       - ./client:/home/jhonata/Documents/TP-Distribuidos/client
     working_dir: /home/jhonata/Documents/TP-Distribuidos/client
     depends_on:
-      - server  # Garante que o servidor esteja rodando antes de iniciar o cliente
+      - server 
     network_mode: host
 
   client-bob:
@@ -41,7 +43,7 @@ services:
       - ./client:/home/jhonata/Documents/TP-Distribuidos/client
     working_dir: /home/jhonata/Documents/TP-Distribuidos/client
     depends_on:
-      - server  # Garante que o servidor esteja rodando antes de iniciar o cliente
+      - server 
     network_mode: host
 
   client-carlos:
@@ -55,5 +57,5 @@ services:
       - ./client:/home/jhonata/Documents/TP-Distribuidos/client
     working_dir: /home/jhonata/Documents/TP-Distribuidos/client
     depends_on:
-      - server  # Garante que o servidor esteja rodando antes de iniciar o cliente
+      - server
     network_mode: host

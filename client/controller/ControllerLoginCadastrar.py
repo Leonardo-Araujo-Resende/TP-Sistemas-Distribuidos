@@ -11,7 +11,7 @@ class ControllerLoginCadastrar():
 
     def sign_in(self, username: str, password: str):
 
-        controller_server = Pyro5.api.Proxy("PYRO:controler-log-cad@0.0.0.0:9090")
+        controller_server = Pyro5.api.Proxy("PYRONAME:server.log_cad")
         
         
         resultado = controller_server.sign_in_bd(username, password)
