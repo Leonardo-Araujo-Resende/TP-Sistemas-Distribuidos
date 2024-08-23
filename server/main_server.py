@@ -2,7 +2,6 @@ from sys import argv
 import sqlite3
 import time
 from Controller.ControllerLoginCadastrar import *
-from Controller.ControllerJogar import *
 from Controller.ControllerPartida import *
 import Pyro5.api
 
@@ -39,11 +38,6 @@ def main():
 
     ns = Pyro5.api.locate_ns()
     ns.register("server.log_cad", uri)
-
-    uri = daemon.register(ControllerJogar(), objectId="controler-jogar")
-
-    ns = Pyro5.api.locate_ns()
-    ns.register("server.jogar", uri)
 
     uri = daemon.register(ControllerPartida(cards_dict), objectId="controler-partida")
 

@@ -1,6 +1,5 @@
-import ast
 import Pyro5.api
-
+import time
 
 class ControllerPartida():
     
@@ -8,18 +7,15 @@ class ControllerPartida():
         controller_partida = Pyro5.api.Proxy("PYRONAME:server.partida")
         return controller_partida.send_start(username)
         
-        # msg = self.client.listen_for_server_msg()  
-        # return msg
-
-    def remove_colchete(self, msg):
-        return ast.literal_eval(msg)
     
-    def send_chosen_card(self, id_carta, id_player):
-        pass
-        # msg = {"op": "carta_escolhida", "id_carta": id_carta, "id_player": id_player}
-        # response = self.client.send_msg(msg)
-        # return response
-
+    def send_chosen_card(self, id_carta, username):
+        controller_partida = Pyro5.api.Proxy("PYRONAME:server.partida")
+        controller_partida.define_chosen_card(id_carta, username)
+        
+        time.sleep(3)
+        
+        return controller_partida.return_winner()
+        
     def send_username(self, username):
         pass
         # msg = {"op": "send_username", "username": username, }

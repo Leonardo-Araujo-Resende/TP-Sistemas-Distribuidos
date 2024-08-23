@@ -34,10 +34,11 @@ class ViewPartida(arcade.View):
         self.dragging_card = None
         self.used_card_x = None
 
-        self.can_darg_card = True
+        self.can_drag_card = True
         
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
         mao_inicial, atributo = self.controller_partida.listen_game_start(self.window.username)
+
 
         self.first_3_cards(mao_inicial)
 
@@ -60,8 +61,6 @@ class ViewPartida(arcade.View):
         self.manager.add( self.pontuacao_jogador_2 )
         self.pontuacao_jogador_3 = UILabel(text= "Jogador 3: ", x=20, y=50, width=250, height=60, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
         self.manager.add( self.pontuacao_jogador_3 )
-
-        self.msg = None
 
     def first_3_cards(self, mao_inicial):
         x = 400
@@ -105,34 +104,64 @@ class ViewPartida(arcade.View):
             bottom = 300,
             color = arcade.color.WHITE
         )
-    def on_update(self, delta_time: float):
-        if self.msg != None:
-            self.update_depois_rodada()
+
 
     def on_show(self):
         self.window.set_window_size(1400,750)
 
     def on_mouse_press(self, x, y, button, modifiers):
         for card in self.cartas_sprites:
-            if card.collides_with_point((x, y)) and self.can_darg_card == True:
+            if card.collides_with_point((x, y)) and self.can_drag_card == True:
                 self.dragging_card = card
 
     def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
-        if self.dragging_card and self.can_darg_card == True:
+        if self.dragging_card and self.can_drag_card == True:
             self.dragging_card.center_x = x
             self.dragging_card.center_y = y
 
     def on_mouse_release(self, x, y, button, modifiers):
-        if self.dragging_card and self.can_darg_card == True:
+        if self.dragging_card and self.can_drag_card == True:
             if y > 300:
-                self.can_darg_card = False
+                self.can_drag_card = False
                 self.dragging_card.center_x = 700
                 self.dragging_card.center_y = 500
                 self.used_card_x = self.dragging_card.init_x
                 id = self.dragging_card.id
-                thread = threading.Thread(target=self.espera_mensagem, args=(id,))
-                thread.start()
+                #enviar carta para servidor
+                self.cont_rodadas += 1
+                
+                if self.cont_rodadas < 7:
+                    vencedor, nova_carta, atributo = self.controller_partida.send_chosen_card(id, self.window.username)
+                    self.update_score(vencedor)
+                    self.update_atributo(atributo)
+                    self.cartas_sprites.remove(self.dragging_card)
+                    self.recieved_card(nova_carta)
 
+                elif self.cont_rodadas == 9:
+                    vencedor = self.controller_partida.send_chosen_card(id, self.window.username)
+                    self.update_score(vencedor)
+                    self.cartas_sprites.remove(self.dragging_card)
+
+                    id_vencedor = self.controller_partida.listen_game_finish()
+
+                    if int(id_vencedor) == int(self.window.id_player):
+                        carta_premiun = self.controller_partida.send_username(self.window.username)
+                        self.window.switch_view_to_win(carta_premiun)
+                    else:
+                        self.jogador_vencedor(f"{id_vencedor}")
+
+                else:
+                    vencedor, atributo = self.controller_partida.send_chosen_card(id, self.window.username)
+                    self.update_score(vencedor)
+                    self.update_atributo(atributo)
+                    self.cartas_sprites.remove(self.dragging_card)
+                
+
+                self.msg = None
+                self.dragging_card = None
+                self.can_drag_card = True
+
+                
             else:
                 self.dragging_card.center_x = self.dragging_card.init_x
                 self.dragging_card.center_y = self.dragging_card.init_y
@@ -140,38 +169,3 @@ class ViewPartida(arcade.View):
     def exibe_msg_aviso(self, msg):
         self.avisos.text = msg
 
-    def espera_mensagem(self, id):
-        self.msg = self.controller_partida.send_chosen_card( self.dragging_card.id, self.window.id_player)
-
-    def update_depois_rodada(self):
-        self.cont_rodadas += 1
-        if self.cont_rodadas < 7:
-            vencedor, nova_carta, atributo = self.msg.split(" - ")
-            self.update_score(vencedor)
-            self.update_atributo(atributo)
-            self.cartas_sprites.remove(self.dragging_card)
-            self.recieved_card(nova_carta)
-
-        elif self.cont_rodadas == 9:
-            vencedor = self.msg
-            self.update_score(vencedor)
-            self.cartas_sprites.remove(self.dragging_card)
-
-            id_vencedor = self.controller_partida.listen_game_finish()
-
-            if int(id_vencedor) == int(self.window.id_player):
-                carta_premiun = self.controller_partida.send_username(self.window.username)
-                self.window.switch_view_to_win(carta_premiun)
-            else:
-                self.jogador_vencedor(f"{id_vencedor}")
-
-        else:
-            vencedor, atributo = self.msg.split(" - ")
-            self.update_score(vencedor)
-            self.update_atributo(atributo)
-            self.cartas_sprites.remove(self.dragging_card)
-        
-
-        self.msg = None
-        self.dragging_card = None
-        self.can_darg_card = True

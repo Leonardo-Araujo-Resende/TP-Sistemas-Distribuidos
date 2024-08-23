@@ -6,8 +6,9 @@ import time
 import threading
 import Pyro5.api
 
-@Pyro5.api.expose
+
 class ControllerPartida():
+
     def __init__(self, all_cards):
         self.username1 = None
         self.username2 = None
@@ -15,24 +16,42 @@ class ControllerPartida():
         self.deck1 = None
         self.deck2 = None
         self.deck3 = None
-        self.cartas_escolhidas = []
+        self.cartas_escolhidas = {"carta1": -1, "carta2": -2, "carta3": -3}
+        self.qt_cartas_escolhidas = 0
+        self.qt_jogadores_prontos = 0
         self.atributo_rodada = ""
-        self.rodada_atual = 1
+        self.rodada_atual = 0
         self.cemiterio1 = []
         self.cemiterio2 = []
         self.cemiterio3 = []
         self.all_cards = all_cards
+        self.vencedor_rodada = ""
+        self.atributo_retorno = ""
     
-
+    
+    
+    @Pyro5.api.expose
+    def get_qt_usuarios_prontos(self,):
+        return self.qt_jogadores_prontos
+    
+    @Pyro5.api.expose
     def set_deck(self, deck, id):
+        
+        self.qt_jogadores_prontos += 1
         if id == 1:
             self.deck1 = deck
         elif id == 2:
             self.deck2 = deck
         else:
             self.deck3 = deck
-
+                
+        while True:
+            if self.qt_jogadores_prontos == 3:
+                break 
+    
+    @Pyro5.api.expose
     def set_username(self, username, id):
+
         if id == 1:
             self.username1 = username
         elif id == 2:
@@ -40,15 +59,17 @@ class ControllerPartida():
         else:
             self.username3 = username
             
-
+    @property
     def get_character_by_index(self, index):
+
         characters_data = list(self.all_cards.keys())
         if 1 <= index <= len(characters_data):
             character_name = characters_data[index - 1]
             return self.all_cards[character_name]
 
-
+    @property
     def who_won(self, personagem1, personagem2, personagem3, atributo):
+
         if atributo == "gimmick":
             vantagens = {
                 'GUARDA': 'DANO',
@@ -82,7 +103,9 @@ class ControllerPartida():
 
             return f"{resultado}"
 
+    @property
     def verificar_vencedor(self, cemiterio1, cemiterio2, cemiterio3):
+
         tamanho1 = len(cemiterio1)
         tamanho2 = len(cemiterio2)
         tamanho3 = len(cemiterio3)
@@ -104,8 +127,9 @@ class ControllerPartida():
             vencedor_final = random.choice(vencedores)
             return vencedor_final
 
-        
+    @Pyro5.api.expose
     def send_start(self, username):
+
         atributos = ["velocidade", "aceleracao", "peso", "capacidade", "resistencia", "truque"]
         atributos_ingles = ["speed", "accel", "weight", "capacity", "resistance", "gimmick"]
         index_random = random.randint(0, 5)
@@ -116,7 +140,69 @@ class ControllerPartida():
             return self.deck2[:3], atributos[index_random]
         else:
             return self.deck3[:3], atributos[index_random]
-   
+        
+    @Pyro5.api.expose
+    def define_chosen_card(self, id_carta, username):
+
+        if username == self.username1:
+            self.cartas_escolhidas['carta1'] = id_carta
+        if username == self.username2:
+            self.cartas_escolhidas['carta2'] = id_carta
+        else:
+            self.cartas_escolhidas['carta3'] = id_carta
+        
+        self.qt_cartas_escolhidas += 1
+        
+        
+        while True:
+            if self.qt_cartas_escolhidas == 3:
+                if self.username1 == username:       
+                    print("enrou winner", flush= True)
+                    self.define_winner()
+                break
+    
+    @property
+    def define_winner(self):
+
+        personagem1 = self.get_character_by_index(self.cartas_escolhidas["carta1"])
+        personagem2 = self.get_character_by_index(self.cartas_escolhidas["carta2"])
+        personagem3 = self.get_character_by_index(self.cartas_escolhidas["carta3"])
+        
+        self.vencedor_rodada = self.who_won(personagem1, personagem2, personagem3, self.atributo_rodada)
+
+        if self.vencedor_rodada == "1":
+            self.cemiterio1.append(self.cartas_escolhidas[1])
+            self.cemiterio1.append(self.cartas_escolhidas[2])
+        elif self.vencedor_rodada == "2":
+            self.cemiterio2.append(self.cartas_escolhidas[0])
+            self.cemiterio2.append(self.cartas_escolhidas[2])
+        elif self.vencedor_rodada == "3":
+            self.cemiterio3.append(self.cartas_escolhidas[0])
+            self.cemiterio3.append(self.cartas_escolhidas[1])
+            
+        atributos = ["Velocidade", "Aceleração", "Peso", "Capacidade", "Resistência", "Truque"]
+        atributos_ingles = ["speed", "accel", "weight", "capacity", "resistance", "gimmick"]
+        index_random = random.randint(0, 5)
+        self.atributo_rodada = atributos_ingles[index_random]
+        self.atributo_retorno = atributos[index_random]
+
+        
+        self.qt_cartas_escolhidas = 0
+        self.rodada_atual += 1
+
+    @Pyro5.api.expose
+    def return_winner(self,):
+
+        if self.rodada_atual < 7:
+            return self.vencedor_rodada, self.deck1[self.rodada_atual+2], self.atributo_retorno
+        elif self.rodada_atual < 9:
+            return self.vencedor_rodada, self.atributo_retorno
+        else:
+            return self.vencedor_rodada
+
+    
+
+
     # def game_start(self,conn1, conn2, conn3):
 
     #     atributos = ["velocidade", "aceleracao", "peso", "capacidade", "resistencia", "truque"]
