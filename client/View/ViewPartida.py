@@ -37,11 +37,8 @@ class ViewPartida(arcade.View):
         self.can_darg_card = True
         
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
-        msg = self.controller_partida.listen_game_finish()
+        mao_inicial, atributo = self.controller_partida.listen_game_start(self.window.username)
 
-        mao_inicial, atributo = msg.split(" - ")
-        
-        mao_inicial = self.controller_partida.remove_colchete(mao_inicial)
         self.first_3_cards(mao_inicial)
 
         self.atributo = UILabel(text= f"Atributo Selecionado: {atributo}", x=700 - 250, y=625, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)

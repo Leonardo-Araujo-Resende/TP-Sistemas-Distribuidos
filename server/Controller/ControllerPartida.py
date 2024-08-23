@@ -12,11 +12,8 @@ class ControllerPartida():
         self.username1 = None
         self.username2 = None
         self.username3 = None
-        self.jogador1 = None
         self.deck1 = None
-        self.jogador2 = None
         self.deck2 = None
-        self.jogador3 = None
         self.deck3 = None
         self.cartas_escolhidas = []
         self.atributo_rodada = ""
@@ -34,6 +31,15 @@ class ControllerPartida():
             self.deck2 = deck
         else:
             self.deck3 = deck
+
+    def set_username(self, username, id):
+        if id == 1:
+            self.username1 = username
+        elif id == 2:
+            self.username2 = username
+        else:
+            self.username3 = username
+            
 
     def get_character_by_index(self, index):
         characters_data = list(self.all_cards.keys())
@@ -99,7 +105,17 @@ class ControllerPartida():
             return vencedor_final
 
         
-
+    def send_start(self, username):
+        atributos = ["velocidade", "aceleracao", "peso", "capacidade", "resistencia", "truque"]
+        atributos_ingles = ["speed", "accel", "weight", "capacity", "resistance", "gimmick"]
+        index_random = random.randint(0, 5)
+        self.atributo_rodada = atributos_ingles[index_random]
+        if username == self.username1:
+            return self.deck1[:3], atributos[index_random]
+        if username == self.username2:
+            return self.deck2[:3], atributos[index_random]
+        else:
+            return self.deck3[:3], atributos[index_random]
    
     # def game_start(self,conn1, conn2, conn3):
 

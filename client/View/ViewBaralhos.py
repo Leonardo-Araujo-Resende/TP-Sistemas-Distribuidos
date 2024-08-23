@@ -198,7 +198,7 @@ class ViewBaralhos(arcade.View):
         def on_click(event):
 
             if len(self.deck_list[0].cards_list) == 9:
-                id = self.controller_jogar.define_deck(self.deck_list[0].cards_list , 1)
+                id = self.controller_jogar.define_deck(self.deck_list[0].cards_list , 1, self.window.username)
                 self.window.id_player = id
                     
                 if self.controller_jogar.listen_game_start() == "Game Ready":
@@ -219,7 +219,7 @@ class ViewBaralhos(arcade.View):
             #Inicia partida com deck 02
 
             if len(self.deck_list[1].cards_list) == 9:
-                id = self.controller_jogar.define_deck(self.deck_list[1].cards_list , 2)
+                id = self.controller_jogar.define_deck(self.deck_list[1].cards_list , 2, self.window.username)
                 self.window.id_player = id
                     
                 if self.controller_jogar.listen_game_start() == "Game Ready":
