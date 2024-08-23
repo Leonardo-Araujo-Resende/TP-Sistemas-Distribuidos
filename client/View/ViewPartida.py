@@ -21,11 +21,11 @@ class CartaSprite(arcade.Sprite):
 
 class ViewPartida(arcade.View):
 
-    def __init__(self, window, client):
+    def __init__(self, window):
         super().__init__()
         self.fundo = arcade.Sprite(filename="resources/fundo.jpg", center_x=650, center_y=350, scale=1.1)
         self.window = window
-        self.controller_partida = ControllerPartida(client)
+        self.controller_partida = ControllerPartida()
         self.cont_rodadas = 0
 
         self.manager = arcade.gui.UIManager()

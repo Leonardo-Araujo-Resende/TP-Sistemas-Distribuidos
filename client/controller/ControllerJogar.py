@@ -1,14 +1,11 @@
-from network.Client import *
 import random
 import Pyro5.api
 
 class ControllerJogar():
 
-    def __init__(self, cliente):
+    def __init__(self):
         self.controller_jogar = None
         self.controller_partida = None
-        self.client = cliente
-   
     def define_deck(self, deck, index_deck):
         controller_jogar = Pyro5.api.Proxy("PYRONAME:server.jogar")
         self.controller_jogar = controller_jogar

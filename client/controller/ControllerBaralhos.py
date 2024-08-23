@@ -2,12 +2,10 @@ from model.Collection import *
 from model.Deck import *
 from typing import List
 from model.Card import *
-from network.Client import *
 
 
 class ControllerBaralhos():
     def __init__(self, collection:Collection, decks:List[Deck]):
-        self.client = Client()
         self.collection = collection
         self.decks = decks
 
