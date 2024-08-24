@@ -224,13 +224,13 @@ class ControllerPartida():
         print("carta do deck recebida: ", self.rodada_atual+2, flush= True)
         if self.rodada_atual < 7:
             if username == self.username1:
-                return self.vencedor_rodada, self.deck1[self.rodada_atual+2], self.atributo_retorno
+                return self.vencedor_rodada, self.deck1[self.rodada_atual+2], self.atributo_retorno, self.cartas_escolhidas["carta1"], self.cartas_escolhidas["carta2"], self.cartas_escolhidas["carta3"]
             elif username == self.username2:
-                return self.vencedor_rodada, self.deck2[self.rodada_atual+2], self.atributo_retorno
+                return self.vencedor_rodada, self.deck2[self.rodada_atual+2], self.atributo_retorno, self.cartas_escolhidas["carta1"], self.cartas_escolhidas["carta2"], self.cartas_escolhidas["carta3"]
             else:
-                return self.vencedor_rodada, self.deck3[self.rodada_atual+2], self.atributo_retorno
+                return self.vencedor_rodada, self.deck3[self.rodada_atual+2], self.atributo_retorno, self.cartas_escolhidas["carta1"], self.cartas_escolhidas["carta2"], self.cartas_escolhidas["carta3"]
         elif self.rodada_atual < 9:
-            return self.vencedor_rodada, self.atributo_retorno
+            return self.vencedor_rodada, self.atributo_retorno,self.cartas_escolhidas["carta1"], self.cartas_escolhidas["carta2"], self.cartas_escolhidas["carta3"]
         else:
             return self.vencedor_rodada
 

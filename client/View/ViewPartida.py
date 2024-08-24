@@ -31,18 +31,26 @@ class ViewPartida(arcade.View):
         self.manager = arcade.gui.UIManager()
         self.manager.enable()
 
+
+        self.jogador1 = UILabel(text= "Jogador 1", x=400 - 125, y=645, align="center",  width=250, height=30, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.jogador2 = UILabel(text= "Jogador 2", x=700 - 125, y=645, align="center",  width=250, height=30, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.jogador3 = UILabel(text= "Jogador 3", x=1000 - 125, y=645, align="center",  width=250, height=30, font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+
+
         self.dragging_card = None
         self.used_card_x = None
 
         self.can_drag_card = True
+        self.atributo_rodada = ""
         
         self.cartas_sprites:CartaSprite = arcade.SpriteList()
-        mao_inicial, atributo = self.controller_partida.listen_game_start(self.window.username)
+        self.cartas_sprites_jogadas = arcade.SpriteList()
+        mao_inicial, self.atributo_rodada = self.controller_partida.listen_game_start(self.window.username)
 
 
         self.first_3_cards(mao_inicial)
 
-        self.atributo = UILabel(text= f"Atributo Selecionado: {atributo}", x=700 - 250, y=625, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
+        self.atributo = UILabel(text= f"Atributo selecionado {self.atributo_rodada}", x=700 - 250, y=675, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
         self.manager.add( self.atributo )
 
         self.avisos = UILabel(text= f"", x=50, y=675, width=500, height=60, align="center", font_name="Roboto", font_size=15,text_color=arcade.color.BLACK)
@@ -63,7 +71,7 @@ class ViewPartida(arcade.View):
         self.manager.add( self.pontuacao_jogador_3 )
 
     def first_3_cards(self, mao_inicial):
-        x = 400
+        x = 450
         y = 150
         for i in range(3):
             self.cartas_sprites.append(CartaSprite(f"resources/{mao_inicial[i]}.jpg", x, y, 0.35, mao_inicial[i]))
@@ -80,7 +88,7 @@ class ViewPartida(arcade.View):
             self.pontuacao_jogador_3.text += "🏆"
 
     def update_atributo(self, msg):
-        self.atributo.text = f"Atributo selecionado: {msg}"
+        self.atributo.text = f"{msg}"
     
     def jogador_vencedor(self,msg):
         self.atributo.text = f"Jogador vencedor {msg}"
@@ -93,6 +101,7 @@ class ViewPartida(arcade.View):
         self.fundo.draw()
         self.manager.draw()
         self.cartas_sprites.draw()
+        self.cartas_sprites_jogadas.draw()
     
     def on_draw(self):
         self.desenha()
@@ -110,6 +119,7 @@ class ViewPartida(arcade.View):
         self.window.set_window_size(1400,750)
 
     def on_mouse_press(self, x, y, button, modifiers):
+        self.desativa_cartas_escolhidas()
         for card in self.cartas_sprites:
             if card.collides_with_point((x, y)) and self.can_drag_card == True:
                 self.dragging_card = card
@@ -131,11 +141,13 @@ class ViewPartida(arcade.View):
                 self.cont_rodadas += 1
                 
                 if self.cont_rodadas < 7:
-                    vencedor, nova_carta, atributo = self.controller_partida.send_chosen_card(id, self.window.username)
+                    vencedor, nova_carta, self.atributo_rodada, carta1, carta2, carta3 = self.controller_partida.send_chosen_card(id, self.window.username)
                     self.update_score(vencedor)
-                    self.update_atributo(atributo)
                     self.cartas_sprites.remove(self.dragging_card)
                     self.recieved_card(nova_carta)
+                    self.exibe_cartas_escolhidas(carta1, carta2, carta3)
+
+                    print(carta1, carta2, carta3, flush=True)
 
                 elif self.cont_rodadas == 9:
                     vencedor = self.controller_partida.send_chosen_card(id, self.window.username)
@@ -154,10 +166,10 @@ class ViewPartida(arcade.View):
                         self.jogador_vencedor(f"{id_vencedor}")
 
                 else:
-                    vencedor, atributo = self.controller_partida.send_chosen_card(id, self.window.username)
+                    vencedor, self.atributo_rodada, carta1,carta2,carta3 = self.controller_partida.send_chosen_card(id, self.window.username)
                     self.update_score(vencedor)
-                    self.update_atributo(atributo)
                     self.cartas_sprites.remove(self.dragging_card)
+                    self.exibe_cartas_escolhidas(carta1, carta2, carta3)
                 
 
                 self.msg = None
@@ -169,6 +181,24 @@ class ViewPartida(arcade.View):
                 self.dragging_card.center_x = self.dragging_card.init_x
                 self.dragging_card.center_y = self.dragging_card.init_y
 
+
+    def exibe_cartas_escolhidas(self, carta1, carta2, carta3):
+        self.manager.add(self.jogador1)
+        self.manager.add(self.jogador2)
+        self.manager.add(self.jogador3)
+        self.cartas_sprites_jogadas.append(CartaSprite(f"resources/{carta1}.jpg", 400, 480, 0.40, carta1))
+        self.cartas_sprites_jogadas.append(CartaSprite(f"resources/{carta2}.jpg", 700, 480, 0.40, carta2))
+        self.cartas_sprites_jogadas.append(CartaSprite(f"resources/{carta3}.jpg", 1000, 480, 0.40, carta3))
+
+    def desativa_cartas_escolhidas(self):
+        self.cartas_sprites_jogadas.clear()
+        self.update_atributo(f"Atributo selecionado {self.atributo_rodada}")
+        self.manager.remove(self.jogador1)
+        self.manager.remove(self.jogador2)
+        self.manager.remove(self.jogador3)
+
     def exibe_msg_aviso(self, msg):
         self.avisos.text = msg
+
+        
 
