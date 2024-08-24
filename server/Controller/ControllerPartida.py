@@ -19,7 +19,9 @@ class ControllerPartida():
         self.cartas_escolhidas = {"carta1": -1, "carta2": -2, "carta3": -3}
         self.qt_cartas_escolhidas = 0
         self.qt_jogadores_prontos = 0
+        self.qt_jogadores_respondidos = 0
         self.atributo_rodada = ""
+        
         self.rodada_atual = 0
         self.cemiterio1 = []
         self.cemiterio2 = []
@@ -47,8 +49,18 @@ class ControllerPartida():
                 
         while True:
             if self.qt_jogadores_prontos == 3:
+                self.qt_jogadores_respondidos += 1       
+                if self.qt_jogadores_respondidos == 3:
+                    self.set_first_attribute()
+                    self.qt_jogadores_respondidos = 0
                 break 
     
+    def set_first_attribute(self):
+        atributos = ["velocidade", "aceleracao", "peso", "capacidade", "resistencia", "truque"]
+        atributos_ingles = ["speed", "accel", "weight", "capacity", "resistance", "gimmick"]
+        index_random = random.randint(0, 5)
+        self.atributo_rodada = atributos_ingles[index_random]
+        self.atributo_retorno = atributos[index_random]
 
     def set_username(self, username, id):
 
@@ -130,23 +142,19 @@ class ControllerPartida():
 
     def send_start(self, username):
 
-        atributos = ["velocidade", "aceleracao", "peso", "capacidade", "resistencia", "truque"]
-        atributos_ingles = ["speed", "accel", "weight", "capacity", "resistance", "gimmick"]
-        index_random = random.randint(0, 5)
-        self.atributo_rodada = atributos_ingles[index_random]
         if username == self.username1:
-            return self.deck1[:3], atributos[index_random]
-        if username == self.username2:
-            return self.deck2[:3], atributos[index_random]
+            return self.deck1[:3], self.atributo_retorno
+        elif username == self.username2:
+            return self.deck2[:3], self.atributo_retorno
         else:
-            return self.deck3[:3], atributos[index_random]
+            return self.deck3[:3], self.atributo_retorno
         
 
     def define_chosen_card(self, id_carta, username):
 
         if username == self.username1:
             self.cartas_escolhidas['carta1'] = id_carta
-        if username == self.username2:
+        elif username == self.username2:
             self.cartas_escolhidas['carta2'] = id_carta
         else:
             self.cartas_escolhidas['carta3'] = id_carta
@@ -156,17 +164,24 @@ class ControllerPartida():
         
         while True:
             if self.qt_cartas_escolhidas == 3:
-                if self.username1 == username:       
+                self.qt_jogadores_respondidos += 1       
+                if self.qt_jogadores_respondidos == 3:
                     self.define_winner()
+                    self.qt_jogadores_respondidos = 0
                 break
     
 
     def define_winner(self):
-        self.append_carta_cemiterio(1,15)
+        
         personagem1 = self.get_character_by_index(self.cartas_escolhidas["carta1"])
         personagem2 = self.get_character_by_index(self.cartas_escolhidas["carta2"])
         personagem3 = self.get_character_by_index(self.cartas_escolhidas["carta3"])
         self.vencedor_rodada = self.who_won(personagem1, personagem2, personagem3, self.atributo_rodada)
+
+        print(personagem1, flush= True)
+        print(personagem2, flush= True)
+        print(personagem3, flush= True)
+        print(self.vencedor_rodada, flush= True)
 
         if self.vencedor_rodada == "1":
             self.append_carta_cemiterio(1,self.cartas_escolhidas["carta2"])
@@ -183,10 +198,10 @@ class ControllerPartida():
         index_random = random.randint(0, 5)
         self.atributo_rodada = atributos_ingles[index_random]
         self.atributo_retorno = atributos[index_random]
-
-        
-        self.qt_cartas_escolhidas = 0
         self.rodada_atual += 1
+        self.qt_cartas_escolhidas = 0
+        
+        
 
     def append_carta_cemiterio(self, id_cemiterio, id_carta):
         if id_cemiterio == 1:
@@ -198,10 +213,17 @@ class ControllerPartida():
             
 
 
-    def return_winner(self):
-
+    def return_winner(self, username):
+        
+        
+        print("carta do deck recebida: ", self.rodada_atual+2, flush= True)
         if self.rodada_atual < 7:
-            return self.vencedor_rodada, self.deck1[self.rodada_atual+2], self.atributo_retorno
+            if username == self.username1:
+                return self.vencedor_rodada, self.deck1[self.rodada_atual+2], self.atributo_retorno
+            elif username == self.username2:
+                return self.vencedor_rodada, self.deck2[self.rodada_atual+2], self.atributo_retorno
+            else:
+                return self.vencedor_rodada, self.deck3[self.rodada_atual+2], self.atributo_retorno
         elif self.rodada_atual < 9:
             return self.vencedor_rodada, self.atributo_retorno
         else:
