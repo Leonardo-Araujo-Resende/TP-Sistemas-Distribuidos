@@ -2,7 +2,7 @@ from model.Collection import *
 from model.Deck import *
 from typing import List
 from model.Card import *
-
+import Pyro5.api
 
 class ControllerBaralhos():
     def __init__(self, collection:Collection, decks:List[Deck]):
@@ -17,15 +17,12 @@ class ControllerBaralhos():
         else:
             return False
 
-    def save_deck(self, deck:Deck, index_deck:int):
-        #Chama network salva deck 1 no banco
-        msg = {"op": "salvaDeck", "deck_index": index_deck, "deck": []}
-
-        for card in deck.cards:
-            # add id da card na msg
-            msg['deck'].append(card.get_id())
+    def save_deck(self, username, deck , index_deck:int):
         
-        return self.client.send_msg(msg)
+        deck = [card.id for card in deck]
+        controller_deck = Pyro5.api.Proxy("PYRONAME:server.deck")
+        controller_deck.save_deck_on_db(username, deck, index_deck)
+         
 
     def delete_deck(self, index_deck:int):
         self.decks[index_deck].reset_deck()

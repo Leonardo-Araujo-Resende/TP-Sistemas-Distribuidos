@@ -192,7 +192,7 @@ class ViewPartida(arcade.View):
 
     def desativa_cartas_escolhidas(self):
         self.cartas_sprites_jogadas.clear()
-        self.update_atributo(f"Atributo selecionado {self.atributo_rodada}")
+        self.update_atributo(f"Atributo selecionado: {self.atributo_rodada}")
         self.manager.remove(self.jogador1)
         self.manager.remove(self.jogador2)
         self.manager.remove(self.jogador3)

@@ -11,6 +11,7 @@ class ControllerPartida():
     def send_chosen_card(self, id_carta, username):
         controller_partida = Pyro5.api.Proxy("PYRONAME:server.partida")
         controller_partida.define_chosen_card(id_carta, username)
+        
         time.sleep(1)
         return controller_partida.return_winner(username)
 

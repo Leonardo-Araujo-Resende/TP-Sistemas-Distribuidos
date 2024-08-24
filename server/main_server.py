@@ -3,6 +3,7 @@ import sqlite3
 import time
 from Controller.ControllerLoginCadastrar import *
 from Controller.ControllerPartida import *
+from Controller.ControllerSaveDeck import *
 import Pyro5.api
 
 def main():
@@ -43,6 +44,11 @@ def main():
 
     ns = Pyro5.api.locate_ns()
     ns.register("server.partida", uri)
+
+    uri = daemon.register(ControllerSaveDeck, objectId="controler-save-deck")
+
+    ns = Pyro5.api.locate_ns()
+    ns.register("server.deck", uri)
 
     daemon.requestLoop()
         

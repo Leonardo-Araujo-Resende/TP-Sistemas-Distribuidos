@@ -158,12 +158,8 @@ class ViewBaralhos(arcade.View):
 
         @button_save_deck_01.event
         def on_click(event):
-            pass
-            #Chama controller e salva no banco deck 01
-            # if self.controller_client.save_deck(self.deck_list[0], 0) == 1:
-            #     self.deck_list[0].alert("Deck Salvo")
-            # else:
-            #     self.deck_list[0].alert("Erro ao salvar")
+            self.controller_view.save_deck(self.window.username, self.deck_list[0].cards_list, 0)
+            
 
 
         button_delete_deck_01 = arcade.gui.UIFlatButton(x=855,y=120-1,text="Excluir1",height=50,width=100,style=self.window.botao_style)
@@ -177,12 +173,8 @@ class ViewBaralhos(arcade.View):
         self.ui_manager.add(button_save_deck_02)
         @button_save_deck_02.event
         def on_click(event):
-            pass
-            #Chama controller e salva no banco deck 02
-            # if self.controller_client.save_deck(self.deck_list[1], 1) == 1:
-            #     self.deck_list[1].alert("Deck Salvo")
-            # else:
-            #     self.deck_list[1].alert("Erro ao salvar")
+            self.controller_view.save_deck(self.window.username, self.deck_list[1].cards_list, 1)
+
 
         button_delete_deck_02 = arcade.gui.UIFlatButton(x=855,y=5-1,text="Excluir2",height=50,width=100,style=self.window.botao_style)
         self.ui_manager.add(button_delete_deck_02)
