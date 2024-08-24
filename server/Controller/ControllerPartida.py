@@ -29,6 +29,7 @@ class ControllerPartida():
         self.all_cards = all_cards
         self.vencedor_rodada = ""
         self.atributo_retorno = ""
+        self.vencedor_final = -1
     
     
     
@@ -116,11 +117,14 @@ class ControllerPartida():
             return f"{resultado}"
 
 
-    def verificar_vencedor(self, cemiterio1, cemiterio2, cemiterio3):
+    def verificar_vencedor(self):
+        print(self.vencedor_final, flush=True)
+        if self.vencedor_final != -1:
+            return self.vencedor_final
 
-        tamanho1 = len(cemiterio1)
-        tamanho2 = len(cemiterio2)
-        tamanho3 = len(cemiterio3)
+        tamanho1 = len(self.cemiterio1)
+        tamanho2 = len(self.cemiterio2)
+        tamanho3 = len(self.cemiterio3)
         
         maior = max(tamanho1, tamanho2, tamanho3)
         
@@ -134,10 +138,11 @@ class ControllerPartida():
             vencedores.append(3)
         
         if len(vencedores) == 1:
-            return vencedores[0]
+            self.vencedor_final = vencedores[0]
+            return self.vencedor_final
         else:
-            vencedor_final = random.choice(vencedores)
-            return vencedor_final
+            self.vencedor_final = random.choice(vencedores)
+            return self.vencedor_final
 
 
     def send_start(self, username):
@@ -229,7 +234,44 @@ class ControllerPartida():
         else:
             return self.vencedor_rodada
 
-    
+    def define_carta_vencedor(self):
+        carta_escolhida = 0
+
+        if self.vencedor_final == 1:
+            carta_escolhida = random.choice(self.cemiterio1)
+        if self.vencedor_final == 2:
+            carta_escolhida = random.choice(self.cemiterio2)
+        if self.vencedor_final == 3:
+            carta_escolhida = random.choice(self.cemiterio3)
+
+        return self.salva_carta_banco( carta_escolhida)
+
+    def salva_carta_banco(self, carta_escolhida):
+
+        username_vencedor = ""
+
+        if self.vencedor_final == 1:
+            username_vencedor = self.username1
+        if self.vencedor_final == 2:
+            username_vencedor = self.username2
+        if self.vencedor_final == 3:
+            username_vencedor = self.username3
+
+        bd_conn = sqlite3.connect('corrida_maluca.db')
+        c = bd_conn.cursor()
+        c.execute("""
+            INSERT INTO cards (username, filename) 
+            VALUES (?, ?)
+            """, (username_vencedor, carta_escolhida))
+
+        print(username_vencedor, carta_escolhida, flush=True)
+
+        bd_conn.commit()
+        bd_conn.close()
+
+        return carta_escolhida
+        
+
 
 
     # def game_start(self,conn1, conn2, conn3):

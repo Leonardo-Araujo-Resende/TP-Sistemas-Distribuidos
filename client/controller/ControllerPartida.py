@@ -13,9 +13,11 @@ class ControllerPartida():
         controller_partida.define_chosen_card(id_carta, username)
         time.sleep(1)
         return controller_partida.return_winner(username)
+
+    def listen_game_finish(self):
+        controller_partida = Pyro5.api.Proxy("PYRONAME:server.partida")
+        return controller_partida.verificar_vencedor()
         
-    def send_username(self, username):
-        pass
-        # msg = {"op": "send_username", "username": username, }
-        # response = self.client.send_msg(msg)
-        # return response
+    def carta_recebida(self):
+        controller_partida = Pyro5.api.Proxy("PYRONAME:server.partida")
+        return controller_partida.define_carta_vencedor()

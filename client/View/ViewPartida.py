@@ -143,11 +143,14 @@ class ViewPartida(arcade.View):
                     self.cartas_sprites.remove(self.dragging_card)
 
                     id_vencedor = self.controller_partida.listen_game_finish()
+                    print("vencedor=", id_vencedor, flush=True)
 
                     if int(id_vencedor) == int(self.window.id_player):
-                        carta_premiun = self.controller_partida.send_username(self.window.username)
+                        ##########
+                        carta_premiun = self.controller_partida.carta_recebida()
                         self.window.switch_view_to_win(carta_premiun)
                     else:
+                        ##########
                         self.jogador_vencedor(f"{id_vencedor}")
 
                 else:
