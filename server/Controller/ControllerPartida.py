@@ -57,7 +57,7 @@ class ControllerPartida():
                 break 
     
     def set_first_attribute(self):
-        atributos = ["velocidade", "aceleracao", "peso", "capacidade", "resistencia", "truque"]
+        atributos = ["Velocidade", "Aceleração", "Peso", "Capacidade", "Resistência", "Truque"]
         atributos_ingles = ["speed", "accel", "weight", "capacity", "resistance", "gimmick"]
         index_random = random.randint(0, 5)
         self.atributo_rodada = atributos_ingles[index_random]
