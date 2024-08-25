@@ -136,6 +136,8 @@ class ControllerPartida():
         if tamanho3 == maior:
             vencedores.append(3)
         
+
+
         if len(vencedores) == 1:
             self.vencedor_final = vencedores[0]
             return self.vencedor_final
@@ -180,6 +182,8 @@ class ControllerPartida():
         personagem1 = self.get_character_by_index(self.cartas_escolhidas["carta1"])
         personagem2 = self.get_character_by_index(self.cartas_escolhidas["carta2"])
         personagem3 = self.get_character_by_index(self.cartas_escolhidas["carta3"])
+
+
         self.vencedor_rodada = self.who_won(personagem1, personagem2, personagem3, self.atributo_rodada)
 
 

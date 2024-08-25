@@ -28,11 +28,11 @@ bd_conn = sqlite3.connect('corrida_maluca.db')
                 )""")
 
     cards_data = [
-        ('BARBIE', 'GUARDA', 6, 5, 3, 4, 4),
-        ('BATMAN', 'DANO', 8, 6, 5, 2, 5),
-        ('BAYMAX', 'VOO', 6, 5, 5, 4, 5),
-        ('BOWSER', 'GUARDA', 7, 6, 6, 5, 5),
-        ('BUMBLEBEE', 'DANO', 8, 7, 5, 4, 5),
+        ('BARBIE', 'GUARDA', 1, 0, 9, 9, 1),
+        ('BATMAN', 'DANO', 6, 7, 6, 2, 7),
+        ('BAYMAX', 'VOO', 3, 5, 6, 1, 8),
+        ('BOWSER', 'GUARDA', 3, 2, 8, 1, 9),
+        ('BUMBLEBEE', 'DANO', 8, 8, 4, 2, 5),
         ('CADU MAVERICK', 'TURBO', 4, 4, 0, 1, 6),
         ('CROCKER', 'GUARDA', 1, 1, 7, 8, 5),
         ('DICK VIGARISTA', 'DANO', 5, 9, 4, 2, 2),

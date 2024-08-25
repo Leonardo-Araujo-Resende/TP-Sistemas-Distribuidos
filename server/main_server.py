@@ -7,9 +7,13 @@ from Controller.ControllerSaveDeck import *
 import Pyro5.api
 
 def main():
+
     
     bd_conn = sqlite3.connect('corrida_maluca.db')
     c = bd_conn.cursor()
+
+
+
 
     c.execute("SELECT * FROM card_list")
     cards = c.fetchall()
