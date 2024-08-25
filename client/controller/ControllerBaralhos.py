@@ -22,7 +22,17 @@ class ControllerBaralhos():
         deck = [card.id for card in deck]
         controller_deck = Pyro5.api.Proxy("PYRONAME:server.deck")
         controller_deck.save_deck_on_db(username, deck, index_deck)
-         
+    
+    def load_deck(self, username: str, index_baralho: int):
+
+        controller_deck = Pyro5.api.Proxy("PYRONAME:server.deck")             
+        deck = controller_deck.search_deck_on_db(username, index_baralho)
+
+        if len(deck) != 9:
+            return -1
+        return deck
+
+    
 
     def delete_deck(self, index_deck:int):
         self.decks[index_deck].reset_deck()

@@ -139,9 +139,9 @@ class ViewBaralhos(arcade.View):
         self.deck_list.append(DeckView(1, 105, 5, 58, self.ui_manager, self.controller_view))
         
         #Preencher baralhos para acelerar testes
-        for i in range(9):
-            card = self.collection.get_cards()[i]
-            self.deck_list[0].append_card( CartaSprite(f"resources/{card.id}.jpg", 50, 50, 0.15, card.id))
+        self.preencher_baralhos( self.controller_view.load_deck(self.window.username, 0),0)
+        self.preencher_baralhos( self.controller_view.load_deck(self.window.username, 1),1)
+
 
         #Carta destacada e quantidade
         self.spotted_card:CartaSprite = arcade.SpriteList()
@@ -217,6 +217,13 @@ class ViewBaralhos(arcade.View):
                 self.alert_deck_02(f"Deck Insuficiente {len(self.deck_list[1].cards_list)}")
             
     
+    def preencher_baralhos(self, baralho, index_baralho):
+        if baralho == -1:
+            return
+        #Preencher baralhos para acelerar testes
+        for i in range(9):
+            self.deck_list[index_baralho].append_card( CartaSprite(f"resources/{baralho[i]}.jpg", 50, 50, 0.15, baralho[i]))
+
     def alert_deck_01(self, msg):
         self.button_play_with_deck_01.text = msg
         arcade.schedule(self.stop_alert_deck_01 , 3)
