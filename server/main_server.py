@@ -7,6 +7,7 @@ from Controller.ControllerSaveDeck import *
 import Pyro5.api
 
 def main():
+    
     bd_conn = sqlite3.connect('corrida_maluca.db')
     c = bd_conn.cursor()
 
@@ -28,10 +29,6 @@ def main():
 
     bd_conn.commit()
     bd_conn.close()    
-
-    # server = Server(cards_dict)
-    # server.listen()
-
 
 
     daemon = Pyro5.api.Daemon()

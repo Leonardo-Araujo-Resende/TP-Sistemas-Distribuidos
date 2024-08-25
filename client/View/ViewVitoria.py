@@ -34,7 +34,6 @@ class ViewVitoria(arcade.View):
     
     def on_show(self):
         self.clear()
-        #self.window.set_window_size(1400,750)
         self.manager.draw()
 
 

@@ -10,8 +10,6 @@ class ControllerLoginCadastrar():
         resultado = controller_login_cad.sign_in_bd(username, password)
         deck1 = controller_deck.search_deck_on_db(username, 0)
         deck2 = controller_deck.search_deck_on_db(username, 1)
-        print("seu deck 1: ", deck1, flush= True)
-        print("seu deck 2: ", deck2, flush= True)
         if resultado == 0:
             return controller_login_cad.return_colection(username) 
         else:

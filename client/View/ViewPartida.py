@@ -147,15 +147,12 @@ class ViewPartida(arcade.View):
                     self.recieved_card(nova_carta)
                     self.exibe_cartas_escolhidas(carta1, carta2, carta3)
 
-                    print(carta1, carta2, carta3, flush=True)
-
                 elif self.cont_rodadas == 9:
                     vencedor = self.controller_partida.send_chosen_card(id, self.window.username)
                     self.update_score(vencedor)
                     self.cartas_sprites.remove(self.dragging_card)
 
                     id_vencedor = self.controller_partida.listen_game_finish()
-                    print("vencedor=", id_vencedor, flush=True)
 
                     if int(id_vencedor) == int(self.window.id_player):
                         ##########
